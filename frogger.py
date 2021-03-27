@@ -3,6 +3,7 @@ import pygame
 import random as Random
 from pygame.locals import *
 from sys import exit
+from object import Object
 
 
 pygame.init()
@@ -38,25 +39,25 @@ sprite_car5 = pygame.image.load(car5_filename).convert_alpha()
 sprite_plataform = pygame.image.load(plataform_filename).convert_alpha()
 
 # --- Carregando Efeitos Sonoros ---
-hit_sound = pygame.mixer.Sound('./sounds/boom.wav')
-agua_sound = pygame.mixer.Sound('./sounds/agua.wav')
-chegou_sound = pygame.mixer.Sound('./sounds/success.wav')
-trilha_sound = pygame.mixer.Sound('./sounds/guimo.wav')
+# hit_sound = pygame.mixer.Sound('./sounds/boom.wav')
+# agua_sound = pygame.mixer.Sound('./sounds/agua.wav')
+# chegou_sound = pygame.mixer.Sound('./sounds/success.wav')
+# trilha_sound = pygame.mixer.Sound('./sounds/guimo.wav')
 
 pygame.display.set_caption('Frogger')
 clock = pygame.time.Clock()
 
 
-class Object():
-    def __init__(self,position,sprite):
-        self.sprite = sprite
-        self.position = position
+# class Object():
+#     def __init__(self,position,sprite):
+#         self.sprite = sprite
+#         self.position = position
 
-    def draw(self):
-        screen.blit(self.sprite,(self.position))
+#     def draw(self, screen):
+#         screen.blit(self.sprite,(self.position))
 
-    def rect(self):
-        return Rect(self.position[0],self.position[1],self.sprite.get_width(),self.sprite.get_height())
+#     def rect(self):
+#         return Rect(self.position[0],self.position[1],self.sprite.get_width(),self.sprite.get_height())
 
 
 class Frog(Object):
@@ -148,7 +149,7 @@ class Frog(Object):
     def setPositionToInitialPosition(self):
         self.position = self.initial_position
 
-    def draw(self):
+    def draw(self, screen):
         current_sprite = self.animation_counter * 30
         screen.blit(self.sprite,(self.position),(0 + current_sprite, 0, 30, 30 + current_sprite))
 
@@ -209,7 +210,7 @@ class Game():
 #Funções gerais
 def drawList(list):
     for i in list:
-        i.draw()
+        i.draw(screen)
 
 def moveList(list,speed):
     for i in list:
@@ -295,7 +296,7 @@ def frogOnTheStreet(frog,enemys,game):
         enemyRect = i.rect()
         frogRect = frog.rect()
         if frogRect.colliderect(enemyRect):
-            hit_sound.play()
+            # hit_sound.play()
             frog.frogDead(game)
 
 def frogInTheLake(frog,plataforms,game):
@@ -310,7 +311,7 @@ def frogInTheLake(frog,plataforms,game):
             wayPlataform = i.way
 
     if seguro == 0:
-        agua_sound.play()
+        # agua_sound.play()
         frog.frogDead(game)
 
     elif seguro == 1:
@@ -365,7 +366,7 @@ def whereIsTheFrog(frog):
 def createArrived(frog,chegaram,game,position_init):
     sapo_chegou = Object(position_init,sprite_arrived)
     chegaram.append(sapo_chegou)
-    chegou_sound.play()
+    # chegou_sound.play()
     frog.setPositionToInitialPosition()
     game.incPoints(10 + game.time) 
 
@@ -393,7 +394,7 @@ def allAlive(frogs):
             return True
     return False
 
-trilha_sound.play(-1)
+# trilha_sound.play(-1)
 text_info = menu_font.render(('Press any button to start!'),1,(0,0,0))
 gameInit = 0
 # game start we need to press any jey to start the game
@@ -486,7 +487,7 @@ while True:
         for frog in frogs:
             if frog.lives > 0:
                 frog.animateFrog(key_pressed,key_up)
-                frog.draw()
+                frog.draw(screen)
 
         destroyEnemys(enemys)
         destroyPlataforms(plataforms)
