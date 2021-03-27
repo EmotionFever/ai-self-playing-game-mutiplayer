@@ -1,6 +1,5 @@
-from object import Object
 import pygame
-from pygame import Rect
+from object import Object
 
 class Frog(Object):
     def __init__(self,position,sprite_sapo):
@@ -10,7 +9,7 @@ class Frog(Object):
         self.lives = 3
         self.animation_counter = 0
         self.animation_tick = 1
-        self.way = "UP"
+        self.way = "down"
         self.can_move = 1
 
     def updateSprite(self,key_pressed):
@@ -96,4 +95,4 @@ class Frog(Object):
         screen.blit(self.sprite,(self.position),(0 + current_sprite, 0, 30, 30 + current_sprite))
 
     def rect(self):
-        return Rect(self.position[0],self.position[1],30,30)
+        return pygame.Rect(self.position[0],self.position[1],30,30)

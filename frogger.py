@@ -4,12 +4,16 @@ import random as Random
 from pygame.locals import *
 from sys import exit
 from object import Object
-
+from frog import Frog
+from enemy import Enemy
+from platform import Platform
+from game import Game
 
 pygame.init()
 pygame.font.init()
 pygame.mixer.pre_init(44100, 32, 2, 4096)
 
+#fonts...
 font_name = pygame.font.get_default_font()
 game_font = pygame.font.SysFont(font_name, 72)
 info_font = pygame.font.SysFont(font_name, 24)
@@ -38,184 +42,20 @@ sprite_car4 = pygame.image.load(car4_filename).convert_alpha()
 sprite_car5 = pygame.image.load(car5_filename).convert_alpha()
 sprite_plataform = pygame.image.load(plataform_filename).convert_alpha()
 
-# --- Carregando Efeitos Sonoros ---
-# hit_sound = pygame.mixer.Sound('./sounds/boom.wav')
-# agua_sound = pygame.mixer.Sound('./sounds/agua.wav')
-# chegou_sound = pygame.mixer.Sound('./sounds/success.wav')
-# trilha_sound = pygame.mixer.Sound('./sounds/guimo.wav')
-
 pygame.display.set_caption('Frogger')
 clock = pygame.time.Clock()
 
-
-# class Object():
-#     def __init__(self,position,sprite):
-#         self.sprite = sprite
-#         self.position = position
-
-#     def draw(self, screen):
-#         screen.blit(self.sprite,(self.position))
-
-#     def rect(self):
-#         return Rect(self.position[0],self.position[1],self.sprite.get_width(),self.sprite.get_height())
-
-
-class Frog(Object):
-    def __init__(self,position,sprite_sapo):
-        self.sprite = sprite_sapo
-        self.initial_position = position
-        self.position = self.initial_position
-        self.lives = 3
-        self.animation_counter = 0
-        self.animation_tick = 1
-        self.way = "UP"
-        self.can_move = 1
-
-    def updateSprite(self,key_pressed):
-        if self.way != key_pressed:
-            self.way = key_pressed
-            if self.way == "up":
-                frog_filename = './images/sprite_sheets_up.png'
-                self.sprite = pygame.image.load(frog_filename).convert_alpha()
-            elif self.way == "down":
-                frog_filename = './images/sprite_sheets_down.png'
-                self.sprite = pygame.image.load(frog_filename).convert_alpha()
-            elif self.way == "left":
-                frog_filename = './images/sprite_sheets_left.png'
-                self.sprite = pygame.image.load(frog_filename).convert_alpha()
-            elif self.way == "right":
-                frog_filename = './images/sprite_sheets_right.png'
-                self.sprite = pygame.image.load(frog_filename).convert_alpha()
-
-
-    def moveFrog(self,key_pressed, key_up):
-        #Tem que fazer o if das bordas da tela ainda
-        #O movimento na horizontal ainda não ta certin
-        if self.animation_counter == 0 :
-            self.updateSprite(key_pressed)
-        self.incAnimationCounter()
-        if key_up == 1:
-            if key_pressed == "up":
-                if self.position[1] > 39:
-                    self.position[1] = self.position[1]-13
-            elif key_pressed == "down":
-                if self.position[1] < 473:
-                    self.position[1] = self.position[1]+13
-            if key_pressed == "left":
-                if self.position[0] > 2:
-                    if self.animation_counter == 2 :
-                        self.position[0] = self.position[0]-13
-                    else:
-                        self.position[0] = self.position[0]-14
-            elif key_pressed == "right":
-                if self.position[0] < 401:
-                    if self.animation_counter == 2 :
-                        self.position[0] = self.position[0]+13
-                    else:
-                        self.position[0] = self.position[0]+14
-
-    def animateFrog(self,key_pressed,key_up):
-        if self.animation_counter != 0 :
-            if self.animation_tick <= 0 :
-                self.moveFrog(key_pressed,key_up)
-                self.animation_tick = 1
-            else :
-                self.animation_tick = self.animation_tick - 1
-
-    def setPos(self,position):
-        self.position = position
-
-    def decLives(self):
-        self.lives = self.lives - 1
-
-    def cannotMove(self):
-        self.can_move = 0
-
-    def incAnimationCounter(self):
-        self.animation_counter = self.animation_counter + 1
-        if self.animation_counter == 3 :
-            self.animation_counter = 0
-            self.can_move = 1
-
-    def frogDead(self,game):
-        self.setPositionToInitialPosition()
-        self.decLives()
-        """game.resetTime()"""
-        self.animation_counter = 0
-        self.animation_tick = 1
-        self.way = "UP"
-        self.can_move = 1
-
-    def setPositionToInitialPosition(self):
-        self.position = self.initial_position
-
-    def draw(self, screen):
-        current_sprite = self.animation_counter * 30
-        screen.blit(self.sprite,(self.position),(0 + current_sprite, 0, 30, 30 + current_sprite))
-
-    def rect(self):
-        return Rect(self.position[0],self.position[1],30,30)
-
-class Enemy(Object):
-    def __init__(self,position,sprite_enemy,way,factor):
-        self.sprite = sprite_enemy
-        self.position = position
-        self.way = way
-        self.factor = factor
-
-    def move(self,speed):
-        if self.way == "right":
-            self.position[0] = self.position[0] + speed * self.factor
-        elif self.way == "left":
-            self.position[0] = self.position[0] - speed * self.factor
-
-
-class Plataform(Object):
-    def __init__(self,position,sprite_plataform,way):
-        self.sprite = sprite_plataform
-        self.position = position
-        self.way = way
-
-    def move(self,speed):
-        if self.way == "right":
-            self.position[0] = self.position[0] + speed
-        elif self.way == "left":
-            self.position[0] = self.position[0] - speed
-
-
-class Game():
-    def __init__(self,speed,level):
-        self.speed = speed
-        self.level = level
-        self.points = 0
-        self.time = 30
-        self.gameInit = 0
-
-    def incLevel(self):
-        self.level = self.level + 1
-
-    def incSpeed(self):
-        self.speed = self.speed + 1
-
-    def incPoints(self,points):
-        self.points = self.points + points
-
-    def decTime(self):
-        self.time = self.time - 1
-
-    def resetTime(self):
-        self.time = 30
-
-
 #Funções gerais
+#Desenhar a lista dos inimigos/plataformas
 def drawList(list):
     for i in list:
         i.draw(screen)
 
+#Mover todos os elementos da lista na direcao adequada
 def moveList(list,speed):
     for i in list:
         i.move(speed)
-
+#Remover carros fora do ecra
 def destroyEnemys(list):
     for i in list:
         if i.position[0] < -80:
@@ -223,6 +63,7 @@ def destroyEnemys(list):
         elif i.position[0] > 516:
             list.remove(i)
 
+#Remover plataformas fora do ecra
 def destroyPlataforms(list):
     for i in list:
         if i.position[0] < -100:
@@ -230,6 +71,7 @@ def destroyPlataforms(list):
         elif i.position[0] > 448:
             list.remove(i)
 
+#Criar os carros
 def createEnemys(list,enemys,game):
     for i, tick in enumerate(list):
         list[i] = list[i] - 1
@@ -260,45 +102,46 @@ def createEnemys(list,enemys,game):
                 enemy = Enemy(position_init,sprite_car5,"right",1)
                 enemys.append(enemy)
 
-def createPlataform(list,plataforms,game):
+#Criar plataformas
+def createPlatform(list,plataforms,game):
     for i, tick in enumerate(list):
         list[i] = list[i] - 1
         if tick <= 0:
             if i == 0:
                 list[0] = (30*game.speed)/game.level
                 position_init = [-100,200]
-                plataform = Plataform(position_init,sprite_plataform,"right")
+                plataform = Platform(position_init,sprite_plataform,"right")
                 plataforms.append(plataform)
             elif i == 1:
                 list[1] = (30*game.speed)/game.level
                 position_init = [448, 161]
-                plataform = Plataform(position_init,sprite_plataform,"left")
+                plataform = Platform(position_init,sprite_plataform,"left")
                 plataforms.append(plataform)
             elif i == 2:
                 list[2] = (40*game.speed)/game.level
                 position_init = [-100, 122]
-                plataform = Plataform(position_init,sprite_plataform,"right")
+                plataform = Platform(position_init,sprite_plataform,"right")
                 plataforms.append(plataform)
             elif i == 3:
                 list[3] = (40*game.speed)/game.level
                 position_init = [448, 83]
-                plataform = Plataform(position_init,sprite_plataform,"left")
+                plataform = Platform(position_init,sprite_plataform,"left")
                 plataforms.append(plataform)
             elif i == 4:
                 list[4] = (20*game.speed)/game.level
                 position_init = [-100, 44]
-                plataform = Plataform(position_init,sprite_plataform,"right")
+                plataform = Platform(position_init,sprite_plataform,"right")
                 plataforms.append(plataform)
 
-
+#Se o sapo esta na estrada, verificar se esta a colidir com um carro
 def frogOnTheStreet(frog,enemys,game):
     for i in enemys:
         enemyRect = i.rect()
         frogRect = frog.rect()
-        if frogRect.colliderect(enemyRect):
-            # hit_sound.play()
-            frog.frogDead(game)
+        if frogRect.colliderect(enemyRect): # verificar se o sapo esta a colidir com um carro
+            frog.frogDead(game)             # dar reset a esse sapo
 
+#
 def frogInTheLake(frog,plataforms,game):
     #se o sapo esta sob alguma plataforma Seguro = 1
     seguro = 0
@@ -306,15 +149,14 @@ def frogInTheLake(frog,plataforms,game):
     for i in plataforms:
         plataformRect = i.rect()
         frogRect = frog.rect()
-        if frogRect.colliderect(plataformRect):
+        if frogRect.colliderect(plataformRect): # se há uma plataforma por baixo do sapo
             seguro = 1
             wayPlataform = i.way
 
-    if seguro == 0:
-        # agua_sound.play()
-        frog.frogDead(game)
+    if seguro == 0: # se não há plataforma por baixo do sapo
+        frog.frogDead(game) # dar reset a esse sapo
 
-    elif seguro == 1:
+    elif seguro == 1: # se está numa plataforma, mover o sapo com a plataforma
         if wayPlataform == "right":
             frog.position[0] = frog.position[0] + game.speed
 
@@ -322,9 +164,9 @@ def frogInTheLake(frog,plataforms,game):
             frog.position[0] = frog.position[0] - game.speed
 
 def frogArrived(frog,chegaram,game):
-    if frog.position[0] > 33 and frog.position[0] < 53:
-        position_init = [43,7]
-        createArrived(frog,chegaram,game,position_init)
+    if frog.position[0] > 33 and frog.position[0] < 53: #primeira posicao de chegada
+        position_init = [43,7] #posicao onde chegou
+        createArrived(frog,chegaram,game,position_init) # adicionar o sapo a lista dos chegados
 
     elif frog.position[0] > 115 and frog.position[0] < 135:
         position_init = [125,7]
@@ -366,7 +208,6 @@ def whereIsTheFrog(frog):
 def createArrived(frog,chegaram,game,position_init):
     sapo_chegou = Object(position_init,sprite_arrived)
     chegaram.append(sapo_chegou)
-    # chegou_sound.play()
     frog.setPositionToInitialPosition()
     game.incPoints(10 + game.time) 
 
@@ -394,7 +235,6 @@ def allAlive(frogs):
             return True
     return False
 
-# trilha_sound.play(-1)
 text_info = menu_font.render(('Press any button to start!'),1,(0,0,0))
 gameInit = 0
 # game start we need to press any jey to start the game
@@ -461,7 +301,7 @@ while True:
                 frog.frogDead(game)
 
         createEnemys(ticks_enemys,enemys,game)
-        createPlataform(ticks_plataforms,plataforms,game)
+        createPlatform(ticks_plataforms,plataforms,game)
 
         moveList(enemys,game.speed)
         moveList(plataforms,game.speed)

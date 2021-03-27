@@ -1,6 +1,6 @@
 from object import Object
 
-class Plataform(Object):
+class Platform(Object):
     def __init__(self,position,sprite_plataform,way):
         self.sprite = sprite_plataform
         self.position = position
