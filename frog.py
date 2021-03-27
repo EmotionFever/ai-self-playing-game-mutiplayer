@@ -4,8 +4,8 @@ from object import Object
 class Frog(Object):
     def __init__(self,position,sprite_sapo):
         self.sprite = sprite_sapo
-        self.initial_position = position
-        self.position = self.initial_position
+        self.initial_pos = position.copy()
+        self.position = position.copy()
         self.lives = 3
         self.animation_counter = 0
         self.animation_tick = 1
@@ -80,7 +80,7 @@ class Frog(Object):
 
     def frogDead(self,game):
         self.setPositionToInitialPosition()
-        self.decLives()
+        #self.decLives()
         """game.resetTime()"""
         self.animation_counter = 0
         self.animation_tick = 1
@@ -88,7 +88,7 @@ class Frog(Object):
         self.can_move = 1
 
     def setPositionToInitialPosition(self):
-        self.position = self.initial_position
+        self.position = self.initial_pos.copy()
 
     def draw(self, screen):
         current_sprite = self.animation_counter * 30

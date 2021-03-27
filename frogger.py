@@ -6,7 +6,7 @@ from sys import exit
 from object import Object
 from frog import Frog
 from enemy import Enemy
-from platform import Platform
+from platform2 import Platform
 from game import Game
 
 pygame.init()
@@ -211,11 +211,11 @@ def createArrived(frog,chegaram,game,position_init):
     frog.setPositionToInitialPosition()
     game.incPoints(10 + game.time) 
 
-    """
-    game.resetTime()
     frog.animation_counter = 0
     frog.animation_tick = 1
     frog.can_move = 1
+    """
+    game.resetTime()
     """
 
 
