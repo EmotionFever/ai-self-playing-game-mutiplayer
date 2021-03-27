@@ -6,7 +6,7 @@ class Frog(Object):
         self.sprite = sprite_sapo
         self.initial_pos = position.copy()
         self.position = position.copy()
-        self.lives = 3
+        self.deaths = 0
         self.animation_counter = 0
         self.animation_tick = 1
         self.way = "down"
@@ -66,8 +66,8 @@ class Frog(Object):
     def setPos(self,position):
         self.position = position
 
-    def decLives(self):
-        self.lives = self.lives - 1
+    def incDeaths(self):
+        self.deaths += 1
 
     def cannotMove(self):
         self.can_move = 0
@@ -80,8 +80,8 @@ class Frog(Object):
 
     def frogDead(self,game):
         self.setPositionToInitialPosition()
-        #self.decLives()
-        """game.resetTime()"""
+        self.incDeaths()
+        game.resetTime()
         self.animation_counter = 0
         self.animation_tick = 1
         self.way = "UP"

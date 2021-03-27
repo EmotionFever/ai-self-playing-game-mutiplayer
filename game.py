@@ -3,7 +3,7 @@ class Game():
         self.speed = speed
         self.level = level
         self.points = 0
-        self.time = 30
+        self.time = 0
         self.gameInit = 0
 
     def incLevel(self):
@@ -15,8 +15,8 @@ class Game():
     def incPoints(self,points):
         self.points = self.points + points
 
-    def decTime(self):
-        self.time = self.time - 1
+    def incTime(self):
+        self.time = self.time + 1
 
     def resetTime(self):
         self.time = 30

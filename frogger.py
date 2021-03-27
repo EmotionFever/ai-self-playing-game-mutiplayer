@@ -229,12 +229,6 @@ def nextLevel(chegaram,enemys,plataforms,frogs,game):
         game.incPoints(100)
         game.resetTime()
 
-def allAlive(frogs):
-    for frog in frogs:
-        if frog.lives > 0:
-            return True
-    return False
-
 text_info = menu_font.render(('Press any button to start!'),1,(0,0,0))
 gameInit = 0
 # game start we need to press any jey to start the game
@@ -273,7 +267,7 @@ while True:
     pressed_keys = 0
     key_pressed = 0
 
-    while allAlive(frogs):
+    while True: # before we finished the game when they were all dead
 
         # Handler to get events from keyboard
         for event in pygame.event.get():
@@ -292,13 +286,9 @@ while True:
                         frog.cannotMove()
         if not ticks_time:
             ticks_time = 30
-            game.decTime()
+            game.incTime()
         else:
             ticks_time -= 1
-
-        if game.time == 0:
-            for frog in frogs:
-                frog.frogDead(game)
 
         createEnemys(ticks_enemys,enemys,game)
         createPlatform(ticks_plataforms,plataforms,game)
@@ -313,9 +303,8 @@ while True:
         screen.blit(text_info2,(250,520))
         offset = 0
         for frog in frogs:
-            if frog.lives > 0:
-                whereIsTheFrog(frog)
-            text_info3 = info_font.render(('Lifes: {1}'.format(game.time,frog.lives)),1,(255,255,255))
+            whereIsTheFrog(frog)
+            text_info3 = info_font.render(('D: {1}'.format(game.time,frog.deaths)),1,(255,255,255))
             screen.blit(text_info3,(320 + offset*70,520))
             offset += 1
         nextLevel(chegaram,enemys,plataforms,frogs,game)
@@ -325,9 +314,8 @@ while True:
         drawList(chegaram)
 
         for frog in frogs:
-            if frog.lives > 0:
-                frog.animateFrog(key_pressed,key_up)
-                frog.draw(screen)
+            frog.animateFrog(key_pressed,key_up)
+            frog.draw(screen)
 
         destroyEnemys(enemys)
         destroyPlataforms(plataforms)
