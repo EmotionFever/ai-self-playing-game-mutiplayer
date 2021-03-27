@@ -62,7 +62,8 @@ class Object():
 class Frog(Object):
     def __init__(self,position,sprite_sapo):
         self.sprite = sprite_sapo
-        self.position = position
+        self.initial_position = position
+        self.position = self.initial_position
         self.lives = 3
         self.animation_counter = 0
         self.animation_tick = 1
@@ -138,14 +139,14 @@ class Frog(Object):
     def frogDead(self,game):
         self.setPositionToInitialPosition()
         self.decLives()
-        game.resetTime()
+        """game.resetTime()"""
         self.animation_counter = 0
         self.animation_tick = 1
         self.way = "UP"
         self.can_move = 1
 
     def setPositionToInitialPosition(self):
-        self.position = [207, 475]
+        self.position = self.initial_position
 
     def draw(self):
         current_sprite = self.animation_counter * 30
@@ -366,17 +367,21 @@ def createArrived(frog,chegaram,game,position_init):
     chegaram.append(sapo_chegou)
     chegou_sound.play()
     frog.setPositionToInitialPosition()
-    game.incPoints(10 + game.time)
+    game.incPoints(10 + game.time) 
+
+    """
     game.resetTime()
     frog.animation_counter = 0
     frog.animation_tick = 1
     frog.can_move = 1
+    """
 
 
-def nextLevel(chegaram,enemys,plataforms,frog,game):
+def nextLevel(chegaram,enemys,plataforms,frogs,game):
     if len(chegaram) == 5:
         chegaram[:] = []
-        frog.setPositionToInitialPosition()
+        for frog in frogs:
+            frog.setPositionToInitialPosition()
         game.incLevel()
         game.incSpeed()
         game.incPoints(100)
@@ -384,14 +389,14 @@ def nextLevel(chegaram,enemys,plataforms,frog,game):
 
 def allAlive(frogs):
     for frog in frogs:
-        if frog.lives == 0:
-            return False
-    return True
+        if frog.lives > 0:
+            return True
+    return False
 
 trilha_sound.play(-1)
 text_info = menu_font.render(('Press any button to start!'),1,(0,0,0))
 gameInit = 0
-
+# game start we need to press any jey to start the game
 while gameInit == 0:
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -407,10 +412,11 @@ while True:
     gameInit = 1
     game = Game(3,1)
     key_up = 1
+    # initial Frogs at the moment there are 2 
     frog_initial_positions = []
     frogs = []
-    frog_initial_positions.append([207,475])
     frog_initial_positions.append([125,475])
+    frog_initial_positions.append([207,475])
     frogs.append(Frog(frog_initial_positions[0],sprite_sapo))
     frogs.append(Frog(frog_initial_positions[1],sprite_sapo))
 
@@ -426,18 +432,23 @@ while True:
     pressed_keys = 0
     key_pressed = 0
 
-    while frog.lives > 0:
+    while allAlive(frogs):
 
+        # Handler to get events from keyboard
         for event in pygame.event.get():
             if event.type == QUIT:
                 exit()
+            # key up, move up
             if event.type == KEYUP:
+                #flag variable to say that key got released, it avoids cliking the same key over and over again
                 key_up = 1
+            # a key got pressed
             if event.type == KEYDOWN:
-                if key_up == 1 and frog.can_move == 1 :
-                    key_pressed = pygame.key.name(event.key)
-                    frog.moveFrog(key_pressed,key_up)
-                    frog.cannotMove()
+                for frog in frogs:
+                    if key_up == 1 and frog.can_move == 1 :
+                        key_pressed = pygame.key.name(event.key)
+                        frog.moveFrog(key_pressed,key_up)
+                        frog.cannotMove()
         if not ticks_time:
             ticks_time = 30
             game.decTime()
@@ -445,7 +456,8 @@ while True:
             ticks_time -= 1
 
         if game.time == 0:
-            frog.frogDead(game)
+            for frog in frogs:
+                frog.frogDead(game)
 
         createEnemys(ticks_enemys,enemys,game)
         createPlataform(ticks_plataforms,plataforms,game)
@@ -453,22 +465,28 @@ while True:
         moveList(enemys,game.speed)
         moveList(plataforms,game.speed)
 
-        whereIsTheFrog(frog)
-
-        nextLevel(chegaram,enemys,plataforms,frog,game)
-
         text_info1 = info_font.render(('Level: {0}               Points: {1}'.format(game.level,game.points)),1,(255,255,255))
-        text_info2 = info_font.render(('Time: {0}           Lifes: {1}'.format(game.time,frog.lives)),1,(255,255,255))
+        text_info2 = info_font.render(('Time: {0}'.format(game.time)),1,(255,255,255))
         screen.blit(background, (0, 0))
         screen.blit(text_info1,(10,520))
         screen.blit(text_info2,(250,520))
+        offset = 0
+        for frog in frogs:
+            if frog.lives > 0:
+                whereIsTheFrog(frog)
+            text_info3 = info_font.render(('Lifes: {1}'.format(game.time,frog.lives)),1,(255,255,255))
+            screen.blit(text_info3,(320 + offset*70,520))
+            offset += 1
+        nextLevel(chegaram,enemys,plataforms,frogs,game)
 
         drawList(enemys)
         drawList(plataforms)
         drawList(chegaram)
 
-        frog.animateFrog(key_pressed,key_up)
-        frog.draw()
+        for frog in frogs:
+            if frog.lives > 0:
+                frog.animateFrog(key_pressed,key_up)
+                frog.draw()
 
         destroyEnemys(enemys)
         destroyPlataforms(plataforms)
