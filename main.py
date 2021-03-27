@@ -5,6 +5,7 @@ from pygame.locals import *
 from sys import exit
 from object import Object
 from frog import Frog
+#from frogwasd import FrogWASD
 from enemy import Enemy
 from platform2 import Platform
 from game import Game

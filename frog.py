@@ -12,48 +12,60 @@ class Frog(Object):
         self.way = "down"
         self.can_move = 1
 
-    def updateSprite(self,key_pressed):
-        if self.way != key_pressed:
-            self.way = key_pressed
-            if self.way == "up":
-                frog_filename = './images/sprite_sheets_up.png'
-                self.sprite = pygame.image.load(frog_filename).convert_alpha()
-            elif self.way == "down":
-                frog_filename = './images/sprite_sheets_down.png'
-                self.sprite = pygame.image.load(frog_filename).convert_alpha()
-            elif self.way == "left":
-                frog_filename = './images/sprite_sheets_left.png'
-                self.sprite = pygame.image.load(frog_filename).convert_alpha()
-            elif self.way == "right":
-                frog_filename = './images/sprite_sheets_right.png'
-                self.sprite = pygame.image.load(frog_filename).convert_alpha()
+    def moveUp(self):
+        if self.position[1] > 39:
+            self.position[1] = self.position[1]-13
+        if self.animation_counter == 0 and self.way != "up":
+            self.way = "up"
+            frog_filename = './images/sprite_sheets_up.png'
+            self.sprite = pygame.image.load(frog_filename).convert_alpha()
+        self.incAnimationCounter()
+    
+    def moveDown(self):
+        if self.position[1] < 473:
+            self.position[1] = self.position[1]+13
+        if self.animation_counter == 0 and self.way != "down":
+            self.way = "down"
+            frog_filename = './images/sprite_sheets_down.png'
+            self.sprite = pygame.image.load(frog_filename).convert_alpha()
+        self.incAnimationCounter()
+    
+    def moveLeft(self):
+        if self.position[0] > 2:
+            if self.animation_counter == 2:
+                self.position[0] = self.position[0]-13
+            else:
+                self.position[0] = self.position[0]-14
+        if self.animation_counter == 0 and self.way != "left":
+            self.way = "left"
+            frog_filename = './images/sprite_sheets_left.png'
+            self.sprite = pygame.image.load(frog_filename).convert_alpha()
+        self.incAnimationCounter()
 
+    def moveRight(self):
+        if self.position[0] < 401:
+            if self.animation_counter == 2 :
+                self.position[0] = self.position[0]+13
+            else:
+                self.position[0] = self.position[0]+14
+        if self.animation_counter == 0 and self.way != "right":
+            self.way = "right"
+            frog_filename = './images/sprite_sheets_right.png'
+            self.sprite = pygame.image.load(frog_filename).convert_alpha()
+        self.incAnimationCounter()
 
     def moveFrog(self,key_pressed, key_up):
         #Tem que fazer o if das bordas da tela ainda
         #O movimento na horizontal ainda não ta certin
-        if self.animation_counter == 0 :
-            self.updateSprite(key_pressed)
-        self.incAnimationCounter()
         if key_up == 1:
             if key_pressed == "up":
-                if self.position[1] > 39:
-                    self.position[1] = self.position[1]-13
+                self.moveUp()
             elif key_pressed == "down":
-                if self.position[1] < 473:
-                    self.position[1] = self.position[1]+13
+                self.moveDown()
             if key_pressed == "left":
-                if self.position[0] > 2:
-                    if self.animation_counter == 2 :
-                        self.position[0] = self.position[0]-13
-                    else:
-                        self.position[0] = self.position[0]-14
+                self.moveLeft()
             elif key_pressed == "right":
-                if self.position[0] < 401:
-                    if self.animation_counter == 2 :
-                        self.position[0] = self.position[0]+13
-                    else:
-                        self.position[0] = self.position[0]+14
+                self.moveRight()
 
     def animateFrog(self,key_pressed,key_up):
         if self.animation_counter != 0 :
