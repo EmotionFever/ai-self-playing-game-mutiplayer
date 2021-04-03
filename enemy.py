@@ -3,7 +3,7 @@ from object import Object
 class Enemy(Object):
     def __init__(self,position,sprite_enemy,way,factor):
         self.sprite = sprite_enemy
-        self.position = position
+        self.position = position.copy()
         self.way = way
         self.factor = factor
 

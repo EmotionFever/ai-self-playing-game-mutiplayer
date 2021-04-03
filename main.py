@@ -72,36 +72,63 @@ def destroyPlataforms(list):
         elif i.position[0] > 448:
             list.remove(i)
 
+position_init_cars = [[0,436], [160,436],[320,436],[40, 397],[160, 397] ,[380, 397],
+                        [170, 357],[250, 357],[0, 318],[136, 318],[316, 280],[220, 280]]
+
 #Criar os carros
 def createEnemys(list,enemys,game):
     for i, tick in enumerate(list):
         list[i] = list[i] - 1
-        if tick <= 0:
+        if tick <= 0: 
             if i == 0:
                 list[0] = (40*game.speed)/game.level
-                position_init = [-55,436]
-                enemy = Enemy(position_init,sprite_car1,"right",1)
+                position_init = position_init_cars[0]
+                enemy = Enemy(position_init,sprite_car1,"right",1) #55right, 58left, 80right, 68left, 56right
+                enemys.append(enemy)
+                position_init = position_init_cars[1]
+                enemy = Enemy(position_init,sprite_car3,"right",1)
+                enemys.append(enemy)
+                position_init = position_init_cars[2]
+                enemy = Enemy(position_init,sprite_car5,"right",1)
                 enemys.append(enemy)
             elif i == 1:
                 list[1] = (30*game.speed)/game.level
-                position_init = [506, 397]
+                position_init = position_init_cars[3]
                 enemy = Enemy(position_init,sprite_car2,"left",2)
+                enemys.append(enemy)
+                position_init = position_init_cars[4]
+                enemy = Enemy(position_init,sprite_car4,"left",2)
+                enemys.append(enemy)
+                position_init = position_init_cars[5]
+                enemy = Enemy(position_init,sprite_car4,"left",2)
                 enemys.append(enemy)
             elif i == 2:
                 list[2] = (40*game.speed)/game.level
-                position_init = [-80, 357]
+                position_init = position_init_cars[6]
+                enemy = Enemy(position_init,sprite_car3,"right",2)
+                enemys.append(enemy)
+                position_init = position_init_cars[7]
                 enemy = Enemy(position_init,sprite_car3,"right",2)
                 enemys.append(enemy)
             elif i == 3:
                 list[3] = (30*game.speed)/game.level
-                position_init = [516, 318]
+                position_init = position_init_cars[8]
+                enemy = Enemy(position_init,sprite_car4,"left",1)
+                enemys.append(enemy)
+                position_init = position_init_cars[9]
                 enemy = Enemy(position_init,sprite_car4,"left",1)
                 enemys.append(enemy)
             elif i == 4:
                 list[4] = (50*game.speed)/game.level
-                position_init = [-56, 280]
+                position_init = position_init_cars[10]
                 enemy = Enemy(position_init,sprite_car5,"right",1)
                 enemys.append(enemy)
+                position_init = position_init_cars[11]
+                enemy = Enemy(position_init,sprite_car3,"right",1)
+                enemys.append(enemy)
+                
+
+position_init_platforms = [[60,200],[220,200],[140,161],[65,122], [220,122],[0,83],[290,83],[50,44],[220,44],[370,44]]
 
 #Criar plataformas
 def createPlatform(list,plataforms,game):
@@ -110,27 +137,42 @@ def createPlatform(list,plataforms,game):
         if tick <= 0:
             if i == 0:
                 list[0] = (30*game.speed)/game.level
-                position_init = [-100,200]
+                position_init = position_init_platforms[0] #200
+                plataform = Platform(position_init,sprite_plataform,"right")
+                plataforms.append(plataform)
+                position_init = position_init_platforms[1] #200
                 plataform = Platform(position_init,sprite_plataform,"right")
                 plataforms.append(plataform)
             elif i == 1:
                 list[1] = (30*game.speed)/game.level
-                position_init = [448, 161]
+                position_init = position_init_platforms[2] #161
                 plataform = Platform(position_init,sprite_plataform,"left")
                 plataforms.append(plataform)
             elif i == 2:
                 list[2] = (40*game.speed)/game.level
-                position_init = [-100, 122]
+                position_init = position_init_platforms[3] #122
+                plataform = Platform(position_init,sprite_plataform,"right")
+                plataforms.append(plataform)
+                position_init = position_init_platforms[4] #122
                 plataform = Platform(position_init,sprite_plataform,"right")
                 plataforms.append(plataform)
             elif i == 3:
                 list[3] = (40*game.speed)/game.level
-                position_init = [448, 83]
+                position_init = position_init_platforms[5] # 83
+                plataform = Platform(position_init,sprite_plataform,"left")
+                plataforms.append(plataform)
+                position_init = position_init_platforms[6] # 83
                 plataform = Platform(position_init,sprite_plataform,"left")
                 plataforms.append(plataform)
             elif i == 4:
                 list[4] = (20*game.speed)/game.level
-                position_init = [-100, 44]
+                position_init = position_init_platforms[7] #44
+                plataform = Platform(position_init,sprite_plataform,"right")
+                plataforms.append(plataform)
+                position_init = position_init_platforms[8] #44
+                plataform = Platform(position_init,sprite_plataform,"right")
+                plataforms.append(plataform)
+                position_init = position_init_platforms[9] #44
                 plataform = Platform(position_init,sprite_plataform,"right")
                 plataforms.append(plataform)
 
@@ -157,12 +199,12 @@ def frogInTheLake(frog,plataforms,game):
     if seguro == 0: # se não há plataforma por baixo do sapo
         frog.frogDead(game) # dar reset a esse sapo
 
-    elif seguro == 1: # se está numa plataforma, mover o sapo com a plataforma
-        if wayPlataform == "right":
-            frog.position[0] = frog.position[0] + game.speed
+    # elif seguro == 1: # se está numa plataforma, mover o sapo com a plataforma
+    #     if wayPlataform == "right":
+    #         frog.position[0] = frog.position[0] + game.speed
 
-        elif wayPlataform == "left":
-            frog.position[0] = frog.position[0] - game.speed
+    #     elif wayPlataform == "left":
+    #         frog.position[0] = frog.position[0] - game.speed
 
 def frogArrived(frog,chegaram,game):
     if frog.position[0] > 33 and frog.position[0] < 53: #primeira posicao de chegada
@@ -262,8 +304,10 @@ while True:
     #30 ticks == 1 segundo
     #ticks_enemys = [120, 90, 120, 90, 150]
     #ticks_plataforms = [90, 90, 120, 120, 60]
-    ticks_enemys = [30, 0, 30, 0, 60]
-    ticks_plataforms = [0, 0, 30, 30, 30]
+    #ticks_enemys = [30, 0, 30, 0, 60]
+    ticks_enemys = [0, 0, 0, 0, 0]
+    # ticks_plataforms = [0, 0, 30, 30, 30]
+    ticks_plataforms = [0, 0, 0, 0, 0]
     ticks_time = 30
     pressed_keys = 0
     key_pressed = 0
@@ -294,8 +338,8 @@ while True:
         createEnemys(ticks_enemys,enemys,game)
         createPlatform(ticks_plataforms,plataforms,game)
 
-        moveList(enemys,game.speed)
-        moveList(plataforms,game.speed)
+        #moveList(enemys,game.speed)
+        #moveList(plataforms,game.speed)
 
         text_info1 = info_font.render(('Level: {0}               Points: {1}'.format(game.level,game.points)),1,(255,255,255))
         text_info2 = info_font.render(('Time: {0}'.format(game.time)),1,(255,255,255))

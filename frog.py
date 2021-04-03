@@ -106,5 +106,5 @@ class Frog(Object):
         current_sprite = self.animation_counter * 30
         screen.blit(self.sprite,(self.position),(0 + current_sprite, 0, 30, 30 + current_sprite))
 
-    def rect(self):
+    def rect(self): 
         return pygame.Rect(self.position[0],self.position[1],30,30)
