@@ -10,6 +10,7 @@ class Frog(Object):
         self.initial_pos = position.copy()
         self.position = position.copy()
         self.deaths = 0
+        self.steps = 0
         self.animation_counter = 0
         self.animation_tick = 1
         self.way = "down"
@@ -83,6 +84,9 @@ class Frog(Object):
 
     def incDeaths(self):
         self.deaths += 1
+
+    def incSteps(self):
+        self.steps += 1
 
     def cannotMove(self):
         self.can_move = 0

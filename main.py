@@ -331,6 +331,7 @@ while True:
                         key_pressed = pygame.key.name(event.key)
                         
                         frog.moveFrog(key_pressed,key_up)
+                        frog.incSteps()
                         frog.cannotMove()
         if not ticks_time:
             ticks_time = 30
@@ -344,7 +345,8 @@ while True:
         #moveList(enemys,game.speed)
         #moveList(plataforms,game.speed)
 
-        text_info1 = info_font.render(('Level: {0}               Points: {1}'.format(game.level,game.points)),1,(255,255,255))
+        # text_info1 = info_font.render(('Level: {0}    Points: {1}'.format(game.level,game.points)),1,(255,255,255))
+        text_info1 = info_font.render(('Level: {0}'.format(game.level)),1,(255,255,255))
         text_info2 = info_font.render(('Time: {0}'.format(game.time)),1,(255,255,255))
         screen.blit(background, (0, 0))
         screen.blit(text_info1,(10,520))
@@ -353,7 +355,9 @@ while True:
         for frog in frogs:
             whereIsTheFrog(frog)
             text_info3 = info_font.render(('D: {1}'.format(game.time,frog.deaths)),1,(255,255,255))
+            text_info4 = info_font.render(('S: {1}'.format(game.time,frog.steps)),1,(255,255,255))
             screen.blit(text_info3,(320 + offset*70,520))
+            screen.blit(text_info4,(80 + offset*70,520))
             offset += 1
         nextLevel(chegaram,enemys,plataforms,frogs,game)
 
