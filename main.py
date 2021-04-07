@@ -73,7 +73,7 @@ def destroyPlataforms(list):
             list.remove(i)
 
 position_init_cars = [[0,436], [160,436],[320,436],[40, 397],[160, 397] ,[380, 397],
-                        [170, 357],[250, 357],[0, 318],[136, 318],[316, 280],[220, 280]]
+                        [165, 357],[250, 357],[0, 318],[136, 318],[316, 280],[220, 280]]
 
 #Criar os carros
 def createEnemys(list,enemys,game):
@@ -296,7 +296,7 @@ while True:
     frog_initial_positions.append([125,475])
     frog_initial_positions.append([207,475])
     frogs.append(Frog(frog_initial_positions[0],sprite_sapo))
-    frogs.append(Frog(frog_initial_positions[1],sprite_sapo))
+    #frogs.append(Frog(frog_initial_positions[1],sprite_sapo))
 
     enemys = []
     plataforms = []
@@ -313,8 +313,9 @@ while True:
     key_pressed = 0
 
     while True: # before we finished the game when they were all dead
-
+        # frogs[0].frogDecision(enemys,plataforms)
         # Handler to get events from keyboard
+        frogs[0].frogDecision(enemys,plataforms)
         for event in pygame.event.get():
             if event.type == QUIT:
                 exit()
@@ -325,8 +326,10 @@ while True:
             # a key got pressed
             if event.type == KEYDOWN:
                 for frog in frogs:
+                    # frog.frogDecision(enemys,plataforms)
                     if key_up == 1 and frog.can_move == 1 :
                         key_pressed = pygame.key.name(event.key)
+                        
                         frog.moveFrog(key_pressed,key_up)
                         frog.cannotMove()
         if not ticks_time:

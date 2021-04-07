@@ -1,5 +1,8 @@
 import pygame
+import random
 from object import Object
+
+MOVE_DISTANCE = 13
 
 class Frog(Object):
     def __init__(self,position,sprite_sapo):
@@ -14,7 +17,7 @@ class Frog(Object):
 
     def moveUp(self):
         if self.position[1] > 39:
-            self.position[1] = self.position[1]-13
+            self.position[1] = self.position[1]-MOVE_DISTANCE
         if self.animation_counter == 0 and self.way != "up":
             self.way = "up"
             frog_filename = './images/sprite_sheets_up.png'
@@ -23,7 +26,7 @@ class Frog(Object):
     
     def moveDown(self):
         if self.position[1] < 473:
-            self.position[1] = self.position[1]+13
+            self.position[1] = self.position[1]+MOVE_DISTANCE
         if self.animation_counter == 0 and self.way != "down":
             self.way = "down"
             frog_filename = './images/sprite_sheets_down.png'
@@ -33,9 +36,9 @@ class Frog(Object):
     def moveLeft(self):
         if self.position[0] > 2:
             if self.animation_counter == 2:
-                self.position[0] = self.position[0]-13
+                self.position[0] = self.position[0]-MOVE_DISTANCE
             else:
-                self.position[0] = self.position[0]-14
+                self.position[0] = self.position[0]-MOVE_DISTANCE-1
         if self.animation_counter == 0 and self.way != "left":
             self.way = "left"
             frog_filename = './images/sprite_sheets_left.png'
@@ -45,9 +48,9 @@ class Frog(Object):
     def moveRight(self):
         if self.position[0] < 401:
             if self.animation_counter == 2 :
-                self.position[0] = self.position[0]+13
+                self.position[0] = self.position[0]+MOVE_DISTANCE
             else:
-                self.position[0] = self.position[0]+14
+                self.position[0] = self.position[0]+MOVE_DISTANCE+1
         if self.animation_counter == 0 and self.way != "right":
             self.way = "right"
             frog_filename = './images/sprite_sheets_right.png'
@@ -98,6 +101,98 @@ class Frog(Object):
         self.animation_tick = 1
         self.way = "UP"
         self.can_move = 1
+    
+    def frogDecision(self,enemys,platforms):
+        canMoveUp = self.position[1] > 39
+        canMoveDown = self.position[1] < 473
+        canMoveLeft = self.position[0] > 2
+        canMoveRight = self.position[0] < 401
+
+        posYUp = self.position[1]-MOVE_DISTANCE
+        posYDown = self.position[1]+MOVE_DISTANCE
+        posXRight = self.position[0]+MOVE_DISTANCE
+        posXLeft = self.position[0]-MOVE_DISTANCE
+
+        upRect = pygame.Rect(self.position[0],posYUp,30,30)
+        downRect = pygame.Rect(self.position[0],posYDown,30,30)
+        leftRect = pygame.Rect(posXLeft,self.position[1],30,30)
+        rightRect = pygame.Rect(posXRight,self.position[1],30,30)
+
+        #Se o sapo ainda não passou da estrada
+        #O sapo pode andar se nao houver um carro na posicao
+        if self.position[1] > 240 :
+            print("Estah na estrada")
+            for car in enemys:#verificar se nao bate num carro
+                if canMoveUp and upRect.colliderect(car.rect()):
+                    canMoveUp = False
+                
+                if canMoveDown and downRect.colliderect(car.rect()):
+                    canMoveDown = False
+
+                if canMoveLeft and leftRect.colliderect(car.rect()):
+                    canMoveLeft = False
+                
+                if canMoveRight and rightRect.colliderect(car.rect()):
+                    canMoveRight = False
+
+
+                # canMoveUp = canMoveUp and not upRect.colliderect(car.rect())
+                # canMoveDown = canMoveDown and not downRect.colliderect(car.rect())
+                # canMoveLeft = canMoveLeft and not leftRect.colliderect(car.rect())
+                # canMoveRight = canMoveRight and not rightRect.colliderect(car.rect())
+                
+        #Se o sapo chegou no rio
+        #O sapo pode andar se houver um tronco na posicao
+        elif self.position[1] < 240 and self.position[1] > 40:
+            print("Estah no rio")
+            canMoveUp=False
+            canMoveDown=False
+            canMoveLeft=False
+            canMoveRight=False
+
+            for plat in platforms:
+                if upRect.colliderect(plat.rect()):
+                    print("\nCHOCOU COM PLAT!!!"+ str(plat.rect())+"\n")
+            for plat in platforms:#verificar se ele esta em cima de um tonco
+
+                if not canMoveUp and upRect.colliderect(plat.rect()):
+                    canMoveUp = True
+                
+                if not canMoveDown and downRect.colliderect(plat.rect()):
+                    canMoveDown = True
+
+                if not canMoveLeft and leftRect.colliderect(plat.rect()):
+                    canMoveLeft = True
+                
+                if not canMoveRight and rightRect.colliderect(plat.rect()):
+                    canMoveRight = True
+
+                # canMoveUp = canMoveUp and upRect.colliderect(plat.rect())
+                # canMoveDown = canMoveDown and downRect.colliderect(plat.rect())
+                # canMoveLeft = canMoveLeft and leftRect.colliderect(plat.rect())
+                # canMoveRight = canMoveRight and rightRect.colliderect(plat.rect())
+        #sapo chegou no objetivo
+        #elif frog.position[1] < 40 :      
+        
+        #ate aqui, o sapo ja consegue sabe tudo a sua volta
+
+        print("canMoveUp:" + str(canMoveUp))
+        print("canMoveDown:" + str(canMoveDown))
+        print("canMoveLeft:" + str(canMoveLeft))
+        print("canMoveRight:" + str(canMoveRight))
+
+        # if canMoveUp:#livre ou possivel ir para cima
+        #     self.moveFrog("up",1)
+        # elif # se nao pode ir para cima tenta ir para os lados
+        #     r = random.random()
+        #     if r < 0.5:
+        #         moveRight()  
+        #     else
+        #         moveLeft()
+        # elif #
+        #     moveDown()
+        #bloqueado de todos lados
+            # nao faz nada
 
     def setPositionToInitialPosition(self):
         self.position = self.initial_pos.copy()
