@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-import pygame
+import pygame 
 import random as Random
 from pygame.locals import *
 from sys import exit
