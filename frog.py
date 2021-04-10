@@ -1,8 +1,11 @@
 import pygame
 import random
+from platform2 import Platform
 from object import Object
+import numpy as np
 
-MOVE_DISTANCE = 13
+MOVE_DISTANCE = 39
+MOVE_DISTANCE_PREDICTION = 39 #35 esta muito perto
 
 class Frog(Object):
     def __init__(self,position,sprite_sapo):
@@ -23,7 +26,7 @@ class Frog(Object):
             self.way = "up"
             frog_filename = './images/sprite_sheets_up.png'
             self.sprite = pygame.image.load(frog_filename).convert_alpha()
-        self.incAnimationCounter()
+        #self.incAnimationCounter()
     
     def moveDown(self):
         if self.position[1] < 473:
@@ -32,7 +35,7 @@ class Frog(Object):
             self.way = "down"
             frog_filename = './images/sprite_sheets_down.png'
             self.sprite = pygame.image.load(frog_filename).convert_alpha()
-        self.incAnimationCounter()
+        #self.incAnimationCounter()
     
     def moveLeft(self):
         if self.position[0] > 2:
@@ -44,7 +47,7 @@ class Frog(Object):
             self.way = "left"
             frog_filename = './images/sprite_sheets_left.png'
             self.sprite = pygame.image.load(frog_filename).convert_alpha()
-        self.incAnimationCounter()
+        #self.incAnimationCounter()
 
     def moveRight(self):
         if self.position[0] < 401:
@@ -56,7 +59,7 @@ class Frog(Object):
             self.way = "right"
             frog_filename = './images/sprite_sheets_right.png'
             self.sprite = pygame.image.load(frog_filename).convert_alpha()
-        self.incAnimationCounter()
+        #self.incAnimationCounter()
 
     def moveFrog(self,key_pressed, key_up):
         #Tem que fazer o if das bordas da tela ainda
@@ -105,22 +108,49 @@ class Frog(Object):
         self.animation_tick = 1
         self.way = "UP"
         self.can_move = 1
+
+    def drawRectangle(self, rectangle, screen):#Usado para debug
+        # Initialing Color Vermelho
+        color = (255,0,0)
+        
+        # Drawing Rectangle
+        pygame.draw.rect(screen, color, rectangle,  2)
+        pygame.display.flip()
     
-    def frogDecision(self,enemys,platforms):
+    def frogDecision(self,enemys,platforms_in, screen,sprite_platform):
+        #criar plataforms
+        offset=0
+        platforms=platforms_in.copy()
+        for i in range(5):
+            platform = Platform([offset,240],sprite_platform,"right")
+            platforms.append(platform)
+            self.drawRectangle(platform.rect(),screen)
+            offset+=99
+        
+        self.drawRectangle(self.rect(),screen)
+
+        for plat in platforms:
+            self.drawRectangle(plat.rect(),screen)
+
         canMoveUp = self.position[1] > 39
         canMoveDown = self.position[1] < 473
         canMoveLeft = self.position[0] > 2
         canMoveRight = self.position[0] < 401
 
-        posYUp = self.position[1]-MOVE_DISTANCE
-        posYDown = self.position[1]+MOVE_DISTANCE
-        posXRight = self.position[0]+MOVE_DISTANCE
-        posXLeft = self.position[0]-MOVE_DISTANCE
+        posYUp = self.position[1]-MOVE_DISTANCE_PREDICTION
+        posYDown = self.position[1]+MOVE_DISTANCE_PREDICTION
+        posXRight = self.position[0]+MOVE_DISTANCE_PREDICTION
+        posXLeft = self.position[0]-MOVE_DISTANCE_PREDICTION
 
         upRect = pygame.Rect(self.position[0],posYUp,30,30)
         downRect = pygame.Rect(self.position[0],posYDown,30,30)
         leftRect = pygame.Rect(posXLeft,self.position[1],30,30)
         rightRect = pygame.Rect(posXRight,self.position[1],30,30)
+
+        self.drawRectangle(upRect, screen)
+        self.drawRectangle(downRect, screen)
+        self.drawRectangle(leftRect, screen)
+        self.drawRectangle(rightRect, screen)
 
         #Se o sapo ainda não passou da estrada
         #O sapo pode andar se nao houver um carro na posicao
@@ -185,16 +215,31 @@ class Frog(Object):
         print("canMoveLeft:" + str(canMoveLeft))
         print("canMoveRight:" + str(canMoveRight))
 
-        # if canMoveUp:#livre ou possivel ir para cima
-        #     self.moveFrog("up",1)
-        # elif # se nao pode ir para cima tenta ir para os lados
-        #     r = random.random()
-        #     if r < 0.5:
-        #         moveRight()  
-        #     else
-        #         moveLeft()
-        # elif #
-        #     moveDown()
+        
+        #possible_actions = [true, false, true, true]
+        #random entre 0 - 3
+        #if possible_actions[random] == true => act() introduzir aleatoriedade 80% - 20% ... 
+        possible_actions = [canMoveUp,canMoveDown,canMoveLeft,canMoveRight]
+        actions = ["up","down","left","right"]
+
+        if canMoveUp:#livre ou possivel ir para cima
+            v = np.array(possible_actions[1:3]).astype(int) # substitui o vector possible_actions para ints
+            v = v / (np.sum(v)) * 0.2
+            return np.random.choice(actions,p=np.append(np.array([0.8]), v))
+
+        elif canMoveRight: #se nao pode ir para cima tenta ir para os lados (isto nao e verdade)
+            return "right"
+        elif canMoveLeft:
+            return "left"
+            # r = random.random()
+            # if r < 0.5:
+            #     return "left"
+            #     #self.moveFrog("left",1)  
+            # else:
+            #     return "right"
+            #     #self.moveFrog("right",1)
+        else: #
+            return "down"
         #bloqueado de todos lados
             # nao faz nada
 
@@ -207,3 +252,6 @@ class Frog(Object):
 
     def rect(self): 
         return pygame.Rect(self.position[0],self.position[1],30,30)
+    
+    def act(self,decision):
+        self.moveFrog(decision,1)

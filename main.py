@@ -9,6 +9,7 @@ from frog import Frog
 from enemy import Enemy
 from platform2 import Platform
 from game import Game
+import time
 
 pygame.init()
 pygame.font.init()
@@ -108,7 +109,7 @@ def createEnemys(list,enemys,game):
                 enemy = Enemy(position_init,sprite_car3,"right",2)
                 enemys.append(enemy)
                 position_init = position_init_cars[7]
-                enemy = Enemy(position_init,sprite_car3,"right",2)
+                enemy = Enemy(position_init,sprite_car5,"right",2)
                 enemys.append(enemy)
             elif i == 3:
                 list[3] = (30*game.speed)/game.level
@@ -240,7 +241,7 @@ def whereIsTheFrog(frog):
         frogOnTheStreet(frog,enemys,game)
 
     #Se o sapo chegou no rio
-    elif frog.position[1] < 240 and frog.position[1] > 40:
+    elif frog.position[1] < 200 and frog.position[1] > 40:
         frogInTheLake(frog,plataforms,game)
 
     #sapo chegou no objetivo
@@ -315,7 +316,7 @@ while True:
     while True: # before we finished the game when they were all dead
         # frogs[0].frogDecision(enemys,plataforms)
         # Handler to get events from keyboard
-        frogs[0].frogDecision(enemys,plataforms)
+        #frogs[0].frogDecision(enemys,plataforms,screen,sprite_plataform)
         for event in pygame.event.get():
             if event.type == QUIT:
                 exit()
@@ -327,12 +328,12 @@ while True:
             if event.type == KEYDOWN:
                 for frog in frogs:
                     # frog.frogDecision(enemys,plataforms)
-                    if key_up == 1 and frog.can_move == 1 :
+                    if key_up == 1  and frog.can_move == 1:
                         key_pressed = pygame.key.name(event.key)
                         
                         frog.moveFrog(key_pressed,key_up)
                         frog.incSteps()
-                        frog.cannotMove()
+                        frog.cannotMove() #desativar controlo pelo teclado
         if not ticks_time:
             ticks_time = 30
             game.incTime()
@@ -341,6 +342,15 @@ while True:
 
         createEnemys(ticks_enemys,enemys,game)
         createPlatform(ticks_plataforms,plataforms,game)
+
+        decision = frogs[0].frogDecision(enemys,plataforms,screen,sprite_plataform)
+
+        if frogs[0].animation_counter == 0:
+            decision = frogs[0].frogDecision(enemys,plataforms,screen,sprite_plataform)
+
+        frogs[0].act(decision)
+        
+        #time.sleep(0.200)
 
         #moveList(enemys,game.speed)
         #moveList(plataforms,game.speed)
@@ -359,6 +369,9 @@ while True:
             screen.blit(text_info3,(320 + offset*70,520))
             screen.blit(text_info4,(80 + offset*70,520))
             offset += 1
+        
+        
+
         nextLevel(chegaram,enemys,plataforms,frogs,game)
 
         drawList(enemys)
