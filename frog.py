@@ -1,8 +1,8 @@
 import pygame
 import random
+import numpy as np
 from platform2 import Platform
 from object import Object
-import numpy as np
 
 MOVE_DISTANCE = 39
 MOVE_DISTANCE_PREDICTION = 39 #35 esta muito perto
@@ -223,9 +223,10 @@ class Frog(Object):
         actions = ["up","down","left","right"]
 
         if canMoveUp:#livre ou possivel ir para cima
-            v = np.array(possible_actions[1:3]).astype(int) # substitui o vector possible_actions para ints
+            v = np.array(possible_actions[1:4]).astype(int) # substitui o vector possible_actions para ints
             v = v / (np.sum(v)) * 0.2
-            return np.random.choice(actions,p=np.append(np.array([0.8]), v))
+            probs = np.concatenate((np.array([0.8]),v))
+            return np.random.choice(actions,p=probs)
 
         elif canMoveRight: #se nao pode ir para cima tenta ir para os lados (isto nao e verdade)
             return "right"
