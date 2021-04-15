@@ -38,7 +38,8 @@ class Frog(Object):
         #self.incAnimationCounter()
     
     def moveLeft(self):
-        if self.position[0] > 2:
+        if self.position[0] > 31:
+            print("posso mover para a esquerda")
             if self.animation_counter == 2:
                 self.position[0] = self.position[0]-MOVE_DISTANCE
             else:
@@ -117,15 +118,9 @@ class Frog(Object):
         pygame.draw.rect(screen, color, rectangle,  2)
         pygame.display.flip()
     
-    def frogDecision(self,enemys,platforms_in, screen,sprite_platform):
+    def frogDecision(self,enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs):
         #criar plataforms
-        offset=0
         platforms=platforms_in.copy()
-        for i in range(5):
-            platform = Platform([offset,240],sprite_platform,"right")
-            platforms.append(platform)
-            self.drawRectangle(platform.rect(),screen)
-            offset+=99
         
         self.drawRectangle(self.rect(),screen)
 
@@ -169,7 +164,6 @@ class Frog(Object):
                 if canMoveRight and rightRect.colliderect(car.rect()):
                     canMoveRight = False
 
-
                 # canMoveUp = canMoveUp and not upRect.colliderect(car.rect())
                 # canMoveDown = canMoveDown and not downRect.colliderect(car.rect())
                 # canMoveLeft = canMoveLeft and not leftRect.colliderect(car.rect())
@@ -206,7 +200,21 @@ class Frog(Object):
                 # canMoveLeft = canMoveLeft and leftRect.colliderect(plat.rect())
                 # canMoveRight = canMoveRight and rightRect.colliderect(plat.rect())
         #sapo chegou no objetivo
-        #elif frog.position[1] < 40 :      
+        #elif frog.position[1] < 40 : 
+        # 
+        # Verificar colisoes com outros sapos
+        for frog in frogs:
+            if canMoveUp and upRect.colliderect(frog.rect()):
+                canMoveUp = False
+                
+            if canMoveDown and downRect.colliderect(frog.rect()):
+                canMoveDown = False
+
+            if canMoveLeft and leftRect.colliderect(frog.rect()):
+                canMoveLeft = False
+                
+            if canMoveRight and rightRect.colliderect(frog.rect()):
+                canMoveRight = False     
         
         #ate aqui, o sapo ja consegue sabe tudo a sua volta
 
@@ -223,24 +231,42 @@ class Frog(Object):
         actions = ["up","down","left","right"]
 
         if canMoveUp:#livre ou possivel ir para cima
-            v = np.array(possible_actions[1:4]).astype(int) # substitui o vector possible_actions para ints
-            v = v / (np.sum(v)) * 0.2
-            probs = np.concatenate((np.array([0.8]),v))
-            return np.random.choice(actions,p=probs)
-
+            v = np.delete(np.array(possible_actions).astype(int), 0) # substitui o vector possible_actions para ints
+            if np.sum(v) == 0:
+                return "up"
+            else:
+                v = v / (np.sum(v)) * 0.2
+                probs = np.insert(v, 0, 0.8)
+                return np.random.choice(actions,p=probs)
         elif canMoveRight: #se nao pode ir para cima tenta ir para os lados (isto nao e verdade)
-            return "right"
+            v = np.delete(np.array(possible_actions).astype(int), 3) # substitui o vector possible_actions para ints
+            if np.sum(v) == 0:
+                return "right"
+            else:
+                v = v / (np.sum(v)) * 0.2
+                probs = np.insert(v, 3, 0.8)
+                return np.random.choice(actions,p=probs)
+
         elif canMoveLeft:
-            return "left"
-            # r = random.random()
-            # if r < 0.5:
-            #     return "left"
-            #     #self.moveFrog("left",1)  
-            # else:
-            #     return "right"
-            #     #self.moveFrog("right",1)
+            v = np.delete(np.array(possible_actions).astype(int), 2) # substitui o vector possible_actions para ints
+            if np.sum(v) == 0:
+                return "left"
+            else:
+                v = v / (np.sum(v)) * 0.2
+                probs = np.insert(v, 2, 0.8)
+                return np.random.choice(actions,p=probs)
+
+        elif canMoveDown:
+            v = np.delete(np.array(possible_actions).astype(int), 1) # substitui o vector possible_actions para ints
+            if np.sum(v) == 0:
+                return "down"
+            else:
+                v = v / (np.sum(v)) * 0.2
+                probs = np.insert(v, 1, 0.8)
+                return np.random.choice(actions,p=probs)
+
         else: #
-            return "down"
+            return ""
         #bloqueado de todos lados
             # nao faz nada
 

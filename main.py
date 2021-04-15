@@ -33,6 +33,7 @@ car3_filename = './images/car3.png'
 car4_filename = './images/car4.png'
 car5_filename = './images/car5.png'
 plataform_filename = './images/tronco.png'
+plataform_quad_filename ="./images/tronco_quad.png"
 
 background = pygame.image.load(background_filename).convert()
 sprite_sapo = pygame.image.load(frog_filename).convert_alpha()
@@ -43,6 +44,7 @@ sprite_car3 = pygame.image.load(car3_filename).convert_alpha()
 sprite_car4 = pygame.image.load(car4_filename).convert_alpha()
 sprite_car5 = pygame.image.load(car5_filename).convert_alpha()
 sprite_plataform = pygame.image.load(plataform_filename).convert_alpha()
+sprite_plataform_quad = pygame.image.load(plataform_quad_filename).convert_alpha()
 
 pygame.display.set_caption('Frogger')
 clock = pygame.time.Clock()
@@ -72,6 +74,7 @@ def destroyPlataforms(list):
             list.remove(i)
         elif i.position[0] > 448:
             list.remove(i)
+    
 
 position_init_cars = [[0,436], [160,436],[320,436],[40, 397],[160, 397] ,[380, 397],
                         [165, 357],[250, 357],[0, 318],[136, 318],[316, 280],[220, 280]]
@@ -176,6 +179,17 @@ def createPlatform(list,plataforms,game):
                 position_init = position_init_platforms[9] #44
                 plataform = Platform(position_init,sprite_plataform,"right")
                 plataforms.append(plataform)
+    offset_plats=0
+    offset_nenufar=0
+    for i in range(5):
+        platform = Platform([offset_plats,240],sprite_plataform,"right")
+        plataforms.append(platform)
+    
+        platform_final = Platform([offset_nenufar+47,9],sprite_plataform_quad,"right")
+        plataforms.append(platform_final)
+
+        offset_plats+=99
+        offset_nenufar+=81
 
 #Se o sapo esta na estrada, verificar se esta a colidir com um carro
 def frogOnTheStreet(frog,enemys,game):
@@ -241,7 +255,7 @@ def whereIsTheFrog(frog):
         frogOnTheStreet(frog,enemys,game)
 
     #Se o sapo chegou no rio
-    elif frog.position[1] < 200 and frog.position[1] > 40:
+    elif frog.position[1] < 230 and frog.position[1] > 40:
         frogInTheLake(frog,plataforms,game)
 
     #sapo chegou no objetivo
@@ -297,7 +311,7 @@ while True:
     frog_initial_positions.append([125,475])
     frog_initial_positions.append([207,475])
     frogs.append(Frog(frog_initial_positions[0],sprite_sapo))
-    #frogs.append(Frog(frog_initial_positions[1],sprite_sapo))
+    frogs.append(Frog(frog_initial_positions[1],sprite_sapo))
 
     enemys = []
     plataforms = []
@@ -313,6 +327,9 @@ while True:
     pressed_keys = 0
     key_pressed = 0
 
+    createEnemys(ticks_enemys,enemys,game)
+    createPlatform(ticks_plataforms,plataforms,game)
+
     while True: # before we finished the game when they were all dead
         # frogs[0].frogDecision(enemys,plataforms)
         # Handler to get events from keyboard
@@ -326,31 +343,39 @@ while True:
                 key_up = 1
             # a key got pressed
             if event.type == KEYDOWN:
-                for frog in frogs:
-                    # frog.frogDecision(enemys,plataforms)
-                    if key_up == 1  and frog.can_move == 1:
-                        key_pressed = pygame.key.name(event.key)
+                if key_up==1 and frogs[0].can_move == 1:
+                    key_pressed = pygame.key.name(event.key)
+                    frogs[0].moveFrog(key_pressed,key_up)
+                # for frog in frogs:
+                #     # frog.frogDecision(enemys,plataforms)
+                #     if key_up == 1  and frog.can_move == 1:
+                #         key_pressed = pygame.key.name(event.key)
                         
-                        frog.moveFrog(key_pressed,key_up)
-                        frog.incSteps()
-                        frog.cannotMove() #desativar controlo pelo teclado
+                #         frog.moveFrog(key_pressed,key_up)
+                #         frog.incSteps()
+                #         #frog.cannotMove() #desativar controlo pelo teclado
         if not ticks_time:
             ticks_time = 30
             game.incTime()
         else:
             ticks_time -= 1
 
-        createEnemys(ticks_enemys,enemys,game)
-        createPlatform(ticks_plataforms,plataforms,game)
+        # createEnemys(ticks_enemys,enemys,game)
+        # createPlatform(ticks_plataforms,plataforms,game)
 
-        decision = frogs[0].frogDecision(enemys,plataforms,screen,sprite_plataform)
-
-        if frogs[0].animation_counter == 0:
-            decision = frogs[0].frogDecision(enemys,plataforms,screen,sprite_plataform)
-
-        frogs[0].act(decision)
+        decision = frogs[1].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
         
-        #time.sleep(0.200)
+
+        # if frogs[0].animation_counter == 0:
+        #     decision = frogs[0].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad)
+
+        frogs[1].act(decision)
+        
+        time.sleep(0.200)
+
+        # for frog in frogs:
+        #     for 
+        #     if frog.rect().colliderect
 
         #moveList(enemys,game.speed)
         #moveList(plataforms,game.speed)
@@ -375,15 +400,15 @@ while True:
         nextLevel(chegaram,enemys,plataforms,frogs,game)
 
         drawList(enemys)
-        drawList(plataforms)
+        drawList(plataforms[:-10]) # desenhar todas as plataformas menos as 10 ultimas que são aquelas extra...
         drawList(chegaram)
 
         for frog in frogs:
             frog.animateFrog(key_pressed,key_up)
             frog.draw(screen)
 
-        destroyEnemys(enemys)
-        destroyPlataforms(plataforms)
+        #destroyEnemys(enemys) nao precisamos de destruir os carros e plataformas no ambiente estatico
+        #destroyPlataforms(plataforms)
 
         pygame.display.update()
         time_passed = clock.tick(30)
