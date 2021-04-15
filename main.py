@@ -132,7 +132,7 @@ def createEnemys(list,enemys,game):
                 enemys.append(enemy)
                 
 
-position_init_platforms = [[60,200],[220,200],[140,161],[65,122], [220,122],[0,83],[290,83],[50,44],[220,44],[370,44]]
+position_init_platforms = [[60,200],[220,200],[140,161],[62,122], [220,122],[0,83],[290,83],[50,44],[220,44],[370,44]]
 
 #Criar plataformas
 def createPlatform(list,plataforms,game):
@@ -287,6 +287,11 @@ def nextLevel(chegaram,enemys,plataforms,frogs,game):
         game.incPoints(100)
         game.resetTime()
 
+def drawNumber(x, y, number, screen):
+    red = (156,0,0)
+    text = info_font.render(str(number), 1, red)
+    screen.blit(text, (x + 10, y + 8))
+
 text_info = menu_font.render(('Press any button to start!'),1,(0,0,0))
 gameInit = 0
 # game start we need to press any jey to start the game
@@ -308,10 +313,18 @@ while True:
     # initial Frogs at the moment there are 2 
     frog_initial_positions = []
     frogs = []
+    frog_initial_positions.append([43 ,475])
     frog_initial_positions.append([125,475])
     frog_initial_positions.append([207,475])
+    frog_initial_positions.append([289,475])
+    frog_initial_positions.append([371,475])
+    
+    
     frogs.append(Frog(frog_initial_positions[0],sprite_sapo))
     frogs.append(Frog(frog_initial_positions[1],sprite_sapo))
+    frogs.append(Frog(frog_initial_positions[2],sprite_sapo))
+    frogs.append(Frog(frog_initial_positions[3],sprite_sapo))
+    frogs.append(Frog(frog_initial_positions[4],sprite_sapo))
 
     enemys = []
     plataforms = []
@@ -363,13 +376,12 @@ while True:
         # createEnemys(ticks_enemys,enemys,game)
         # createPlatform(ticks_plataforms,plataforms,game)
 
-        decision = frogs[1].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
+        #decision = frogs[1].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
         
 
-        # if frogs[0].animation_counter == 0:
-        #     decision = frogs[0].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad)
-
-        frogs[1].act(decision)
+        for i in range (0, len(frogs)):
+            decision = frogs[i].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
+            frogs[i].act(decision)
         
         time.sleep(0.200)
 
@@ -403,10 +415,10 @@ while True:
         drawList(plataforms[:-10]) # desenhar todas as plataformas menos as 10 ultimas que são aquelas extra...
         drawList(chegaram)
 
-        for frog in frogs:
-            frog.animateFrog(key_pressed,key_up)
-            frog.draw(screen)
-
+        for i in range(len(frogs)):
+            frogs[i].animateFrog(key_pressed,key_up)
+            frogs[i].draw(screen)
+            drawNumber(frogs[i].rect().x, frogs[i].rect().y, i, screen)
         #destroyEnemys(enemys) nao precisamos de destruir os carros e plataformas no ambiente estatico
         #destroyPlataforms(plataforms)
 

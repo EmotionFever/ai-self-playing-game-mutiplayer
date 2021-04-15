@@ -39,7 +39,6 @@ class Frog(Object):
     
     def moveLeft(self):
         if self.position[0] > 31:
-            print("posso mover para a esquerda")
             if self.animation_counter == 2:
                 self.position[0] = self.position[0]-MOVE_DISTANCE
             else:
@@ -110,22 +109,23 @@ class Frog(Object):
         self.way = "UP"
         self.can_move = 1
 
-    def drawRectangle(self, rectangle, screen):#Usado para debug
-        # Initialing Color Vermelho
-        color = (255,0,0)
+    def drawRectangle(self, rectangle, canMove, screen):#Usado para debug
+        colorCannotMove = (255,0,0)
+        colorCanMove = (0,130,0)
+        color = colorCanMove if canMove else colorCannotMove
         
         # Drawing Rectangle
-        pygame.draw.rect(screen, color, rectangle,  2)
+        pygame.draw.rect(screen, color, rectangle,  3)
         pygame.display.flip()
     
     def frogDecision(self,enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs):
         #criar plataforms
         platforms=platforms_in.copy()
         
-        self.drawRectangle(self.rect(),screen)
+        #self.drawRectangle(self.rect(), False, screen)
 
-        for plat in platforms:
-            self.drawRectangle(plat.rect(),screen)
+        # for plat in platforms:
+        #     self.drawRectangle(plat.rect(),screen)
 
         canMoveUp = self.position[1] > 39
         canMoveDown = self.position[1] < 473
@@ -142,15 +142,10 @@ class Frog(Object):
         leftRect = pygame.Rect(posXLeft,self.position[1],30,30)
         rightRect = pygame.Rect(posXRight,self.position[1],30,30)
 
-        self.drawRectangle(upRect, screen)
-        self.drawRectangle(downRect, screen)
-        self.drawRectangle(leftRect, screen)
-        self.drawRectangle(rightRect, screen)
-
         #Se o sapo ainda não passou da estrada
-        #O sapo pode andar se nao houver um carro na posicao
-        if self.position[1] > 240 :
-            print("Estah na estrada")
+        #O sapo pode andar se nao houver um carro na posicao old: > 240
+        if self.position[1] > 270 :
+            print("Esta na estrada")
             for car in enemys:#verificar se nao bate num carro
                 if canMoveUp and upRect.colliderect(car.rect()):
                     canMoveUp = False
@@ -170,17 +165,14 @@ class Frog(Object):
                 # canMoveRight = canMoveRight and not rightRect.colliderect(car.rect())
                 
         #Se o sapo chegou no rio
-        #O sapo pode andar se houver um tronco na posicao
-        elif self.position[1] < 240 and self.position[1] > 40:
-            print("Estah no rio")
+        #O sapo pode andar se houver um tronco na posicao old: < 240
+        elif self.position[1] < 270 and self.position[1] > 40:
+            print("Esta no rio")
             canMoveUp=False
             canMoveDown=False
             canMoveLeft=False
             canMoveRight=False
 
-            for plat in platforms:
-                if upRect.colliderect(plat.rect()):
-                    print("\nCHOCOU COM PLAT!!!"+ str(plat.rect())+"\n")
             for plat in platforms:#verificar se ele esta em cima de um tonco
 
                 if not canMoveUp and upRect.colliderect(plat.rect()):
@@ -201,7 +193,13 @@ class Frog(Object):
                 # canMoveRight = canMoveRight and rightRect.colliderect(plat.rect())
         #sapo chegou no objetivo
         #elif frog.position[1] < 40 : 
-        # 
+
+        # Verificar colisoes com o fim do mapa
+        if rightRect.x >= 445:
+            canMoveRight = False
+        if leftRect.x <= 0:
+            canMoveLeft = False
+            
         # Verificar colisoes com outros sapos
         for frog in frogs:
             if canMoveUp and upRect.colliderect(frog.rect()):
@@ -216,6 +214,11 @@ class Frog(Object):
             if canMoveRight and rightRect.colliderect(frog.rect()):
                 canMoveRight = False     
         
+        # desenhar retangulo ah volta 
+        self.drawRectangle(upRect, canMoveUp, screen)
+        self.drawRectangle(downRect, canMoveDown, screen)
+        self.drawRectangle(leftRect, canMoveLeft, screen)
+        self.drawRectangle(rightRect, canMoveRight, screen)
         #ate aqui, o sapo ja consegue sabe tudo a sua volta
 
         print("canMoveUp:" + str(canMoveUp))
@@ -230,43 +233,78 @@ class Frog(Object):
         possible_actions = [canMoveUp,canMoveDown,canMoveLeft,canMoveRight]
         actions = ["up","down","left","right"]
 
-        if canMoveUp:#livre ou possivel ir para cima
-            v = np.delete(np.array(possible_actions).astype(int), 0) # substitui o vector possible_actions para ints
-            if np.sum(v) == 0:
-                return "up"
-            else:
-                v = v / (np.sum(v)) * 0.2
-                probs = np.insert(v, 0, 0.8)
-                return np.random.choice(actions,p=probs)
-        elif canMoveRight: #se nao pode ir para cima tenta ir para os lados (isto nao e verdade)
-            v = np.delete(np.array(possible_actions).astype(int), 3) # substitui o vector possible_actions para ints
-            if np.sum(v) == 0:
-                return "right"
-            else:
-                v = v / (np.sum(v)) * 0.2
-                probs = np.insert(v, 3, 0.8)
-                return np.random.choice(actions,p=probs)
+        if self.position[1] > 270 : #esta na estrada
+            priority = np.array([0.75, 0.05, 0.1, 0.1]) 
+        else: #esta no rio
+            priority = np.array([0.6, 0.15, 0.125, 0.125])#0.8, 0.04, 0.08, 0.08
 
-        elif canMoveLeft:
-            v = np.delete(np.array(possible_actions).astype(int), 2) # substitui o vector possible_actions para ints
-            if np.sum(v) == 0:
-                return "left"
-            else:
-                v = v / (np.sum(v)) * 0.2
-                probs = np.insert(v, 2, 0.8)
-                return np.random.choice(actions,p=probs)
 
-        elif canMoveDown:
-            v = np.delete(np.array(possible_actions).astype(int), 1) # substitui o vector possible_actions para ints
-            if np.sum(v) == 0:
-                return "down"
-            else:
-                v = v / (np.sum(v)) * 0.2
-                probs = np.insert(v, 1, 0.8)
-                return np.random.choice(actions,p=probs)
+        possible_actions_int = np.array(possible_actions).astype(int)
+        probs = np.multiply(priority,possible_actions) 
 
-        else: #
-            return ""
+        if np.sum(probs) == 0:
+            return
+
+        probs = probs / (np.sum(probs)) #normalize
+        
+        return np.random.choice(actions,p=probs)
+
+
+ #        if canMoveUp:#livre ou possivel ir para cima
+ #            v = np.delete(np.array(possible_actions).astype(int), 0) # substitui o vector possible_actions para ints
+ #            if np.sum(v) == 0:
+ #                return "up"
+ #            else:
+ #                v = v / (np.sum(v)) * 0.2
+ #                probs = np.insert(v, 0, 0.8)
+ #                return np.random.choice(actions,p=probs)
+ #        else:
+ #            v = np.delete(np.array(possible_actions).astype(int), 1) # delete down
+
+ #            v = np.array(possible_actions).astype(int) # [false, TF ,TF ,TF] => [0, 0-1, 0-1,0-1]
+ #            if canMoveLeft or canMoveRight: 
+ #                v = v / (np.sum(v)) * 0.2 * 0.8
+            
+ #            if not canMoveLeft and not canMoveRight:
+ #                return "down"
+
+ #            if canMoveDown:
+                
+
+ #            return np.random.choice(actions,p=v)
+
+
+
+
+        # elif canMoveRight and canMoveLeft: #se nao pode ir para cima tenta ir para os lados (isto nao e verdade)
+        #     v = np.delete(np.array(possible_actions).astype(int), 3) # substitui o vector possible_actions para ints
+        #     if np.sum(v) == 0:
+        #         return "right"
+        #     else:
+        #         v = v / (np.sum(v)) * 0.2
+        #         probs = np.insert(v, 3, 0.8)
+        #         return np.random.choice(actions,p=probs)
+
+        # elif canMoveLeft:
+        #     v = np.delete(np.array(possible_actions).astype(int), 2) # substitui o vector possible_actions para ints
+        #     if np.sum(v) == 0:
+        #         return "left"
+        #     else:
+        #         v = v / (np.sum(v)) * 0.2
+        #         probs = np.insert(v, 2, 0.8)
+        #         return np.random.choice(actions,p=probs)
+
+        # elif canMoveDown:
+        #     v = np.delete(np.array(possible_actions).astype(int), 1) # substitui o vector possible_actions para ints
+        #     if np.sum(v) == 0:
+        #         return "down"
+        #     else:
+        #         v = v / (np.sum(v)) * 0.2
+        #         probs = np.insert(v, 1, 0.8)
+        #         return np.random.choice(actions,p=probs)
+
+        # else: #
+        #     return ""
         #bloqueado de todos lados
             # nao faz nada
 
