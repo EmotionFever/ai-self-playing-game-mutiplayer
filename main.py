@@ -265,13 +265,13 @@ def whereIsTheFrog(frog):
 
 def createArrived(frog,chegaram,game,position_init):
     sapo_chegou = Object(position_init,sprite_arrived)
-    chegaram.append(sapo_chegou)
-    frog.setPositionToInitialPosition()
+    #chegaram.append(sapo_chegou)
+    #frog.setPositionToInitialPosition()
     game.incPoints(10 + game.time) 
 
     frog.animation_counter = 0
     frog.animation_tick = 1
-    frog.can_move = 1
+    frog.can_move = 0
     """
     game.resetTime()
     """
@@ -383,7 +383,7 @@ while True:
             decision = frogs[i].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
             frogs[i].act(decision)
         
-        time.sleep(0.200)
+        #time.sleep(0.200)
 
         # for frog in frogs:
         #     for 
@@ -394,18 +394,20 @@ while True:
 
         # text_info1 = info_font.render(('Level: {0}    Points: {1}'.format(game.level,game.points)),1,(255,255,255))
         text_info1 = info_font.render(('Level: {0}'.format(game.level)),1,(255,255,255))
-        text_info2 = info_font.render(('Time: {0}'.format(game.time)),1,(255,255,255))
+        #text_info2 = info_font.render(('Time: {0}'.format(game.time)),1,(255,255,255))
         screen.blit(background, (0, 0))
         screen.blit(text_info1,(10,520))
-        screen.blit(text_info2,(250,520))
+        #screen.blit(text_info2,(250,520))
         offset = 0
+        sum_steps=0
         for frog in frogs:
             whereIsTheFrog(frog)
-            text_info3 = info_font.render(('D: {1}'.format(game.time,frog.deaths)),1,(255,255,255))
-            text_info4 = info_font.render(('S: {1}'.format(game.time,frog.steps)),1,(255,255,255))
+            sum_steps+=frog.steps
+            text_info3 = info_font.render(('D: {0}'.format(frog.deaths)),1,(255,255,255))
             screen.blit(text_info3,(320 + offset*70,520))
-            screen.blit(text_info4,(80 + offset*70,520))
             offset += 1
+        text_info4 = info_font.render(('S: {0}'.format(sum_steps)),1,(255,255,255))           
+        screen.blit(text_info4,(80,520))
         
         
 

@@ -119,6 +119,9 @@ class Frog(Object):
         pygame.display.flip()
     
     def frogDecision(self,enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs):
+        if(self.can_move==0):
+            return
+        self.incSteps()
         #criar plataforms
         platforms=platforms_in.copy()
         
@@ -234,9 +237,9 @@ class Frog(Object):
         actions = ["up","down","left","right"]
 
         if self.position[1] > 270 : #esta na estrada
-            priority = np.array([0.75, 0.05, 0.1, 0.1]) 
+            priority = np.array([0.55, 0.05, 0.2, 0.2]) 
         else: #esta no rio
-            priority = np.array([0.6, 0.15, 0.125, 0.125])#0.8, 0.04, 0.08, 0.08
+            priority = np.array([0.4,0.3,0.15,0.15])#0.6, 0.15, 0.125, 0.125
 
 
         possible_actions_int = np.array(possible_actions).astype(int)
