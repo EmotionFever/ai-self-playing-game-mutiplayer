@@ -3,6 +3,7 @@ import random
 import numpy as np
 from platform2 import Platform
 from object import Object
+from random import randrange
 
 MOVE_DISTANCE = 39
 MOVE_DISTANCE_PREDICTION = 39 #35 esta muito perto
@@ -18,6 +19,10 @@ class Frog(Object):
         self.animation_tick = 1
         self.way = "down"
         self.can_move = 1
+        self.known_map =  {} #dicionario com acoes que nao se devem executar num ponto
+        self.desires = [] #TODO RECTS INICIAIS DOS NENUFARES nenufares possiveis de atingir
+        self.intention = None #nenufar que este sapo quer atingir
+        self.plan = [] #sequencia de acoes a tomar
 
     def moveUp(self):
         if self.position[1] > 39:
@@ -215,7 +220,7 @@ class Frog(Object):
                 canMoveLeft = False
                 
             if canMoveRight and rightRect.colliderect(frog.rect()):
-                canMoveRight = False     
+                canMoveRight = False
         
         # desenhar retangulo ah volta 
         self.drawRectangle(upRect, canMoveUp, screen)
@@ -310,6 +315,32 @@ class Frog(Object):
         #     return ""
         #bloqueado de todos lados
             # nao faz nada
+
+    #Deliberative
+
+    def deliberate(self):#escolhe o desire para intention
+        if(len(desires) !=0 ) :
+            self.intention=self.desires[randrange(len(self.desires))]
+
+    def updateBeliefs(self):#olha a volta e melhora o internal state (know_map)
+        #ver canMoveUp, canMoveRight.... e atualiza o know_map
+        return
+    
+    def sound(self):#verifica se a proxima acao leva a morte
+        #verifica se não pode executar a proxima acao do plano usando o know_map
+        return True
+    
+    def buildPlan(self):#usando o shortestPath, cria uma lista de acoes a executar
+        #FOR pelos RECTS do shortestPath e ve como passar de um rect para outro
+        return
+
+    def shortestPath(self):#dada a posicao atual e a posicao da intencao, cria uma lista de RECTS por onde tem de passar
+        #tem que ter em conta o know_map, para nao fazer acoes que nao deve em certos pontos
+        return None
+    
+    def executeAction(self):#executa a acao dada
+        return
+
 
     def setPositionToInitialPosition(self):
         self.position = self.initial_pos.copy()

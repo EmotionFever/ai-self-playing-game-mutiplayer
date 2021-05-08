@@ -314,17 +314,17 @@ while True:
     frog_initial_positions = []
     frogs = []
     frog_initial_positions.append([43 ,475])
-    frog_initial_positions.append([125,475])
-    frog_initial_positions.append([207,475])
-    frog_initial_positions.append([289,475])
-    frog_initial_positions.append([371,475])
+    #frog_initial_positions.append([125,475])
+    #frog_initial_positions.append([207,475])
+    #frog_initial_positions.append([289,475])
+    #frog_initial_positions.append([371,475])
     
     
     frogs.append(Frog(frog_initial_positions[0],sprite_sapo))
-    frogs.append(Frog(frog_initial_positions[1],sprite_sapo))
-    frogs.append(Frog(frog_initial_positions[2],sprite_sapo))
-    frogs.append(Frog(frog_initial_positions[3],sprite_sapo))
-    frogs.append(Frog(frog_initial_positions[4],sprite_sapo))
+    #frogs.append(Frog(frog_initial_positions[1],sprite_sapo))
+    #frogs.append(Frog(frog_initial_positions[2],sprite_sapo))
+    #frogs.append(Frog(frog_initial_positions[3],sprite_sapo))
+    #frogs.append(Frog(frog_initial_positions[4],sprite_sapo))
 
     enemys = []
     plataforms = []
