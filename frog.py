@@ -8,6 +8,10 @@ from random import randrange
 MOVE_DISTANCE = 39
 MOVE_DISTANCE_PREDICTION = 39 #35 esta muito perto
 
+class Node(object):
+    point = tuple()
+    parent = None
+
 class Frog(Object):
     def __init__(self,position,sprite_sapo):
         self.sprite = sprite_sapo
@@ -21,9 +25,14 @@ class Frog(Object):
         self.can_move = 1
         self.known_map =  dict() #dicionario com acoes que nao se devem executar num ponto
         self.desires=[] #TODO RECTS INICIAIS DOS NENUFARES nenufares possiveis de atingir
-        aux=0
-        for i in range(5):
-            self.desires.append(pygame.Rect(47+aux,9,28,28))
+        aux=0 
+        self.canMoveUp=False
+        self.canMoveDown=False
+        self.canMoveRight=False
+        self.canMoveLeft=False
+        
+        for i in range(5):#estes sao os desires que pode ter (nenufares)
+            self.desires.append((47+aux,9))
             aux+=81
         self.intention = None #nenufar que este sapo quer atingir
         self.plan = [] #sequencia de acoes a tomar
@@ -127,6 +136,8 @@ class Frog(Object):
         pygame.draw.rect(screen, color, rectangle,  3)
         pygame.display.flip()
     
+    ############################ REACTIVE ##########################################################################
+    
     def frogDecision(self,enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs):
         if(self.can_move==0):
             return
@@ -139,10 +150,10 @@ class Frog(Object):
         # for plat in platforms:
         #     self.drawRectangle(plat.rect(),screen)
 
-        canMoveUp = self.position[1] > 39
-        canMoveDown = self.position[1] < 473
-        canMoveLeft = self.position[0] > 2
-        canMoveRight = self.position[0] < 401
+        self.canMoveUp = self.position[1] > 39
+        self.canMoveDown = self.position[1] < 473
+        self.canMoveLeft = self.position[0] > 2
+        self.canMoveRight = self.position[0] < 401
 
         posYUp = self.position[1]-MOVE_DISTANCE_PREDICTION
         posYDown = self.position[1]+MOVE_DISTANCE_PREDICTION
@@ -157,19 +168,19 @@ class Frog(Object):
         #Se o sapo ainda não passou da estrada
         #O sapo pode andar se nao houver um carro na posicao old: > 240
         if self.position[1] > 270 :
-            print("Esta na estrada")
+            #print("Esta na estrada")
             for car in enemys:#verificar se nao bate num carro
-                if canMoveUp and upRect.colliderect(car.rect()):
-                    canMoveUp = False
+                if self.canMoveUp and upRect.colliderect(car.rect()):
+                    self.canMoveUp = False
                 
-                if canMoveDown and downRect.colliderect(car.rect()):
-                    canMoveDown = False
+                if self.canMoveDown and downRect.colliderect(car.rect()):
+                    self.canMoveDown = False
 
-                if canMoveLeft and leftRect.colliderect(car.rect()):
-                    canMoveLeft = False
+                if self.canMoveLeft and leftRect.colliderect(car.rect()):
+                    self.canMoveLeft = False
                 
-                if canMoveRight and rightRect.colliderect(car.rect()):
-                    canMoveRight = False
+                if self.canMoveRight and rightRect.colliderect(car.rect()):
+                    self.canMoveRight = False
 
                 # canMoveUp = canMoveUp and not upRect.colliderect(car.rect())
                 # canMoveDown = canMoveDown and not downRect.colliderect(car.rect())
@@ -180,24 +191,24 @@ class Frog(Object):
         #O sapo pode andar se houver um tronco na posicao old: < 240
         elif self.position[1] < 270 and self.position[1] > 40:
             print("Esta no rio")
-            canMoveUp=False
-            canMoveDown=False
-            canMoveLeft=False
-            canMoveRight=False
+            self.canMoveUp=False
+            self.canMoveDown=False
+            self.canMoveLeft=False
+            self.canMoveRight=False
 
             for plat in platforms:#verificar se ele esta em cima de um tonco
 
-                if not canMoveUp and upRect.colliderect(plat.rect()):
-                    canMoveUp = True
+                if not self.canMoveUp and upRect.colliderect(plat.rect()):
+                    self.canMoveUp = True
                 
-                if not canMoveDown and downRect.colliderect(plat.rect()):
-                    canMoveDown = True
+                if not self.canMoveDown and downRect.colliderect(plat.rect()):
+                    self.canMoveDown = True
 
-                if not canMoveLeft and leftRect.colliderect(plat.rect()):
-                    canMoveLeft = True
+                if not self.canMoveLeft and leftRect.colliderect(plat.rect()):
+                    self.canMoveLeft = True
                 
-                if not canMoveRight and rightRect.colliderect(plat.rect()):
-                    canMoveRight = True
+                if not self.canMoveRight and rightRect.colliderect(plat.rect()):
+                    self.canMoveRight = True
 
                 # canMoveUp = canMoveUp and upRect.colliderect(plat.rect())
                 # canMoveDown = canMoveDown and downRect.colliderect(plat.rect())
@@ -208,41 +219,41 @@ class Frog(Object):
 
         # Verificar colisoes com o fim do mapa
         if rightRect.x >= 445:
-            canMoveRight = False
+            self.canMoveRight = False
         if leftRect.x <= 0:
-            canMoveLeft = False
+            self.canMoveLeft = False
             
         # Verificar colisoes com outros sapos
         for frog in frogs:
-            if canMoveUp and upRect.colliderect(frog.rect()):
-                canMoveUp = False
+            if self.canMoveUp and upRect.colliderect(frog.rect()):
+                self.canMoveUp = False
                 
-            if canMoveDown and downRect.colliderect(frog.rect()):
-                canMoveDown = False
+            if self.canMoveDown and downRect.colliderect(frog.rect()):
+                self.canMoveDown = False
 
-            if canMoveLeft and leftRect.colliderect(frog.rect()):
-                canMoveLeft = False
+            if self.canMoveLeft and leftRect.colliderect(frog.rect()):
+                self.canMoveLeft = False
                 
-            if canMoveRight and rightRect.colliderect(frog.rect()):
-                canMoveRight = False
+            if self.canMoveRight and rightRect.colliderect(frog.rect()):
+                self.canMoveRight = False
         
         # desenhar retangulo ah volta 
-        self.drawRectangle(upRect, canMoveUp, screen)
-        self.drawRectangle(downRect, canMoveDown, screen)
-        self.drawRectangle(leftRect, canMoveLeft, screen)
-        self.drawRectangle(rightRect, canMoveRight, screen)
+        self.drawRectangle(upRect, self.canMoveUp, screen)
+        self.drawRectangle(downRect, self.canMoveDown, screen)
+        self.drawRectangle(leftRect, self.canMoveLeft, screen)
+        self.drawRectangle(rightRect, self.canMoveRight, screen)
         #ate aqui, o sapo ja consegue sabe tudo a sua volta
 
-        print("canMoveUp:" + str(canMoveUp))
-        print("canMoveDown:" + str(canMoveDown))
-        print("canMoveLeft:" + str(canMoveLeft))
-        print("canMoveRight:" + str(canMoveRight))
+        print("canMoveUp:" + str(self.canMoveUp))
+        print("canMoveDown:" + str(self.canMoveDown))
+        print("canMoveLeft:" + str(self.canMoveLeft))
+        print("canMoveRight:" + str(self.canMoveRight))
 
         
         #possible_actions = [true, false, true, true]
         #random entre 0 - 3
         #if possible_actions[random] == true => act() introduzir aleatoriedade 80% - 20% ... 
-        possible_actions = [canMoveUp,canMoveDown,canMoveLeft,canMoveRight]
+        possible_actions = [self.canMoveUp,self.canMoveDown,self.canMoveLeft,self.canMoveRight]
         actions = ["up","down","left","right"]
 
         if self.position[1] > 270 : #esta na estrada
@@ -261,128 +272,210 @@ class Frog(Object):
         
         return np.random.choice(actions,p=probs)
 
-    #Deliberative
-    def deliberativeDecision(self):#TODO
-        self.updateBeliefs()
-        return
+    ################################# END OF REACTIVE ###################################################################
+
+    ############################ Deliberative ##########################################################
+    def deliberativeDecision(self,enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs):#TODO
+        self.updateBeliefs(enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs)
+        #se nao tem intention, obtem uma nova
+        if (self.intention==None):
+            self.deliberate()
+        #se o plano estiver vazio entao criar um plano
+        if (len(self.plan) == 0):
+            self.buildPlan()
+        #se o plano nao estiver vazio, *tentar* correr a primeira acao usando a funcao sound
+        if (self.sound()):
+            self.executeAction()
+        
 
     def deliberate(self):#escolhe o desire para intention
-        if(len(desires) !=0 ) :
+        if(len(self.desires) !=0 ) :
             self.intention=self.desires[randrange(len(self.desires))]
 
     def updateBeliefs(self,enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs):
         #olha a volta e melhora o internal state (know_map)
         #ver canMoveUp, canMoveRight.... e atualiza o know_map
+
         platforms=platforms_in.copy()
 
-        canMoveUp = self.position[1] > 39
-        canMoveDown = self.position[1] < 473
-        canMoveLeft = self.position[0] > 2
-        canMoveRight = self.position[0] < 401
+        self.canMoveUp    = self.position[1] > 39
+        self.canMoveDown  = self.position[1] < 473
+        self.canMoveLeft  = self.position[0] > 2
+        self.canMoveRight = self.position[0] < 401
 
-        posYUp = self.position[1]-MOVE_DISTANCE_PREDICTION
-        posYDown = self.position[1]+MOVE_DISTANCE_PREDICTION
-        posXRight = self.position[0]+MOVE_DISTANCE_PREDICTION
-        posXLeft = self.position[0]-MOVE_DISTANCE_PREDICTION
+        posYUp    = self.position[1] - MOVE_DISTANCE_PREDICTION
+        posYDown  = self.position[1] + MOVE_DISTANCE_PREDICTION
+        posXRight = self.position[0] + MOVE_DISTANCE_PREDICTION
+        posXLeft  = self.position[0] - MOVE_DISTANCE_PREDICTION
 
-        upRect = pygame.Rect(self.position[0],posYUp,30,30)
-        downRect = pygame.Rect(self.position[0],posYDown,30,30)
-        leftRect = pygame.Rect(posXLeft,self.position[1],30,30)
+        upRect    = pygame.Rect(self.position[0],posYUp,30,30)
+        downRect  = pygame.Rect(self.position[0],posYDown,30,30)
+        leftRect  = pygame.Rect(posXLeft,self.position[1],30,30)
         rightRect = pygame.Rect(posXRight,self.position[1],30,30)
 
         #Se o sapo ainda não passou da estrada
         #O sapo pode andar se nao houver um carro na posicao old: > 240
         if self.position[1] > 270 :
-            print("Esta na estrada")
+            #print("Esta na estrada")
             for car in enemys:#verificar se nao bate num carro
-                if canMoveUp and upRect.colliderect(car.rect()):
-                    canMoveUp = False
-                if canMoveDown and downRect.colliderect(car.rect()):
-                    canMoveDown = False
-                if canMoveLeft and leftRect.colliderect(car.rect()):
-                    canMoveLeft = False
-                if canMoveRight and rightRect.colliderect(car.rect()):
-                    canMoveRight = False
+                if self.canMoveUp and upRect.colliderect(car.rect()):
+                    self.canMoveUp = False
+                if self.canMoveDown and downRect.colliderect(car.rect()):
+                    self.canMoveDown = False
+                if self.canMoveLeft and leftRect.colliderect(car.rect()):
+                    self.canMoveLeft = False
+                if self.canMoveRight and rightRect.colliderect(car.rect()):
+                    self.canMoveRight = False
                 
         #Se o sapo chegou no rio
         #O sapo pode andar se houver um tronco na posicao old: < 240
         elif self.position[1] < 270 and self.position[1] > 40:
             print("Esta no rio")
-            canMoveUp=False
-            canMoveDown=False
-            canMoveLeft=False
-            canMoveRight=False
+            self.canMoveUp=False
+            self.canMoveDown=False
+            self.canMoveLeft=False
+            self.canMoveRight=False
 
             for plat in platforms:#verificar se ele esta em cima de um tonco
-                if not canMoveUp and upRect.colliderect(plat.rect()):
-                    canMoveUp = True
-                if not canMoveDown and downRect.colliderect(plat.rect()):
-                    canMoveDown = True
-                if not canMoveLeft and leftRect.colliderect(plat.rect()):
-                    canMoveLeft = True
-                if not canMoveRight and rightRect.colliderect(plat.rect()):
-                    canMoveRight = True
+                if not self.canMoveUp and upRect.colliderect(plat.rect()):
+                    self.canMoveUp = True
+                if not self.canMoveDown and downRect.colliderect(plat.rect()):
+                    self.canMoveDown = True
+                if not self.canMoveLeft and leftRect.colliderect(plat.rect()):
+                    self.canMoveLeft = True
+                if not self.canMoveRight and rightRect.colliderect(plat.rect()):
+                    self.canMoveRight = True
         #sapo chegou no objetivo
         #elif frog.position[1] < 40 : 
 
         # Verificar colisoes com o fim do mapa
         if rightRect.x >= 445:
-            canMoveRight = False
+            self.canMoveRight = False
         if leftRect.x <= 0:
-            canMoveLeft = False
+            self.canMoveLeft = False
+        
+        # desenhar retangulo ah volta 
+        self.drawRectangle(upRect, self.canMoveUp, screen)
+        self.drawRectangle(downRect, self.canMoveDown, screen)
+        self.drawRectangle(leftRect, self.canMoveLeft, screen)
+        self.drawRectangle(rightRect, self.canMoveRight, screen)
 
-        posX = position[0]
-        posY = position[1]
+        #vamos atualizar o know_map
+        posX = self.position[0]
+        posY = self.position[1]
 
-        if (posX,posY) in know_map.keys():# se o tuplo da posicao atual ja estiver no know_map
-            if not(canMoveUp) and not("up" in know_map[(posX,posY)]): # se nao se puder mover para cima entao adicionar "up" em know_map[(position[0],position[1])]
-                know_map[(posX,posY)].append("up") #quer dizer que nao pode fazer up nesta posicao
-            if not(canMoveDown) and not("down" in know_map[(posX,posY)]):
-                know_map[(posX,posY)].append("down")
-            if not(canMoveLeft) and not("left" in know_map[(posX,posY)]):
-                know_map[(posX,posY)].append("left")
-            if not(canMoveRight) and not("right" in know_map[(posX,posY)]):
-                know_map[(posX,posY)].append("right")
-        else:
-            know_map[(posX,posY)] = [] # se nao existia a key para esta posicao, criar a key no know_map
-            if not(canMoveUp):
-                know_map[(posX,posY)].append("up") 
-            if not(canMoveDown):
-                know_map[(posX,posY)].append("down")
-            if not(canMoveLeft):
-                know_map[(posX,posY)].append("left")
-            if not(canMoveRight):
-                know_map[(posX,posY)].append("right")
-            #se depois das verificacoes a lista de acoes proibidas nesta posicao continua vazia, retirar do know_map     
-            if len(know_map[(posX,posY)]) == 0:
-                del know_map[(posX,posY)]
+        prohibited_actions = []
+        if not(self.canMoveUp):
+            prohibited_actions.append("up") 
+        if not(self.canMoveDown):
+            prohibited_actions.append("down")
+        if not(self.canMoveLeft):
+            prohibited_actions.append("left")
+        if not(self.canMoveRight):
+            prohibited_actions.append("right")
+        #se depois das verificacoes a lista de acoes proibidas nesta posicao continua vazia, nao adicionar ao know_map     
+        if len(prohibited_actions) > 0:
+            if (posX,posY) not in self.known_map.keys():
+                self.known_map[(posX,posY)] = set()
+            self.known_map[(posX,posY)].update(prohibited_actions)
+        
+        #ISTO NAO PODE SAIR DAQUI, ** POR BAIXO DO ATUALIZAR DO KNOW_MAP **
+        # Verificar colisoes com outros sapos
+        for frog in frogs:
+            if self.canMoveUp and upRect.colliderect(frog.rect()):
+                self.canMoveUp = False
+                
+            if self.canMoveDown and downRect.colliderect(frog.rect()):
+                self.canMoveDown = False
 
+            if self.canMoveLeft and leftRect.colliderect(frog.rect()):
+               self.canMoveLeft = False
+                
+            if self.canMoveRight and rightRect.colliderect(frog.rect()):
+                self.canMoveRight = False
     
     def sound(self):#verifica se a proxima acao leva a morte
         #verifica se não pode executar a proxima acao do plano usando o know_map
-        if(len(plan) == 0):
+        if(len(self.plan) == 0):
             return False
-        next_action = plan[0]
+        next_action = self.plan[0]
         if next_action == "up":
-            return canMoveUp
+            return self.canMoveUp
         if next_action == "down":
-            return canMoveDown
+            return self.canMoveDown
         if next_action == "left":
-            return canMoveLeft
+            return self.canMoveLeft
         if next_action == "right":
-            return canMoveRight
+            return self.canMoveRight
         return True
     
     def buildPlan(self):#usando o shortestPath, cria uma lista de acoes a executar
         #FOR pelos RECTS do shortestPath e ve como passar de um rect para outro
-        return
+        res = self.shortestPath(self.position,self.intention)
+        print(self.intention)
+        path = [res.point]
+        while(res.parent != None):
+            res = res.parent
+            path.insert(0,res.point)
+        # o path tem os varios pontos por onde tem de passar
+        print(path)
+        self.plan = []
+        p1 = path.pop(0)
+        while(len(path) > 0):
+            p2 = path.pop(0)
+            action = self.howToReachFromTo(p1,p2)
+            self.plan.append(action)
+            p1=p2
+        
+        print(self.plan)
+            
+    def howToReachFromTo(self,p1,p2):#devolve a acao que deve ser executada para ir de um ponto para outro adjacente
+        if(p1[0] == p2[0] and p1[1] < p2[1]):
+            return "down"#nao tenho a certeza se este ta certo
+        if(p1[0] == p2[0] and  p1[1] > p2[1]):
+            return "up"#nao tenho a certeza se este ta certo
+        if(p1[0] < p2[0] and p1[1] == p2[1]):
+            return "right"
+        if(p1[0] > p2[0] and  p1[1] == p2[1]):
+            return "left"
 
-    def shortestPath(self):#dada a posicao atual e a posicao da intencao, cria uma lista de RECTS por onde tem de passar
+
+    def shortestPath(self,p1,p2):#dada a posicao atual e a posicao da intencao, cria uma lista de RECTS por onde tem de passar
         #tem que ter em conta o know_map, para nao fazer acoes que nao deve em certos pontos
+        visited = np.zeros(shape=(600,600))
+        visited[p1[0],p1[1]] = 1
+        queue = []
+        n1 = Node()
+        n1.point = p1
+        queue.append(n1)
+        
+        row = [-39, 0, 0, 39]
+        col = [0, -39, 39, 0]
+        #    up,left,right,down
+        acts = ["up","left","right","down"]
+        
+        while(len(queue)>0):
+            n = queue.pop(0)
+            point = n.point
+            for i in range(4):
+                x = point[0] + row[i]
+                y = point[1] + col[i]
+                #if(x == p2[0] and y == p2[1]):
+                if(x - p2[0] < 5  and y - p2[1]< 5):
+                    ret = Node()
+                    ret.point = p2
+                    ret.parent = n
+                    return ret    #(point not in self.known_map.keys() or acts[i] not in self.known_map[point]) 
+                if(  visited[x,y] == 0 and x>2 and x<401 and y>39 and y<473):
+                    visited[x,y] = 1
+                    new=Node()
+                    new.point=(x,y)
+                    new.parent= n
+                    queue.append(new)
         return None
     
     def executeAction(self):#executa a acao que esta na primeira posicao do plano
-        action = plan.pop(0)
+        action = self.plan.pop(0)
         self.act(action)
 
     def setPositionToInitialPosition(self):

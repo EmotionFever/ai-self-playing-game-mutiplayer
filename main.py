@@ -380,8 +380,9 @@ while True:
         
 
         for i in range (0, len(frogs)):
-            decision = frogs[i].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
-            frogs[i].act(decision)
+            #decision = frogs[i].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
+            #frogs[i].act(decision)
+            frogs[i].deliberativeDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
         
         #time.sleep(0.200)
 
