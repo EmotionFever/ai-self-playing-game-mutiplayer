@@ -474,7 +474,9 @@ class Frog(Object):
                     #print(self.known_map)
                     #print("Para o ponto:" + str(point) + " entrei para a acao:"+ acts[i] + ".")
                     aux = visited[x,y] == 0
-                    if(visited[x,y] == 0 and x>2 and x<401 and y>39 and y<=475):
+
+                    #TODO ENCONTRAR O VALOR CERTO PARA O X < 408
+                    if(visited[x,y] == 0 and x>2 and x<408 and y>39 and y<=475):
                         visited[x,y] = 1
                         new=Node()
                         new.point=(x,y)
