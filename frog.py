@@ -60,7 +60,7 @@ class Frog(Object):
             if self.animation_counter == 2:
                 self.position[0] = self.position[0]-MOVE_DISTANCE
             else:
-                self.position[0] = self.position[0]-MOVE_DISTANCE-1
+                self.position[0] = self.position[0]-MOVE_DISTANCE
         if self.animation_counter == 0 and self.way != "left":
             self.way = "left"
             frog_filename = './images/sprite_sheets_left.png'
@@ -72,7 +72,7 @@ class Frog(Object):
             if self.animation_counter == 2 :
                 self.position[0] = self.position[0]+MOVE_DISTANCE
             else:
-                self.position[0] = self.position[0]+MOVE_DISTANCE+1
+                self.position[0] = self.position[0]+MOVE_DISTANCE
         if self.animation_counter == 0 and self.way != "right":
             self.way = "right"
             frog_filename = './images/sprite_sheets_right.png'
