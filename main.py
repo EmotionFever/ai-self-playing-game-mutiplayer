@@ -313,10 +313,10 @@ while True:
     # initial Frogs at the moment there are 2 
     frog_initial_positions = []
     frogs = []
-    frog_initial_positions.append([43 ,475])
+    #frog_initial_positions.append([43 ,475])
     #frog_initial_positions.append([125,475])
     #frog_initial_positions.append([207,475])
-    #frog_initial_positions.append([289,475])
+    frog_initial_positions.append([289,475])
     #frog_initial_positions.append([371,475])
     
     

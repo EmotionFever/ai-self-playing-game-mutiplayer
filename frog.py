@@ -286,11 +286,14 @@ class Frog(Object):
         #se o plano nao estiver vazio, *tentar* correr a primeira acao usando a funcao sound
         if (self.sound()):
             self.executeAction()
+        else:
+            self.buildPlan()
         
 
     def deliberate(self):#escolhe o desire para intention
         if(len(self.desires) !=0 ) :
             self.intention=self.desires[randrange(len(self.desires))]
+        self.intention = (209,9)
 
     def updateBeliefs(self,enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs):
         #olha a volta e melhora o internal state (know_map)
@@ -426,17 +429,18 @@ class Frog(Object):
             action = self.howToReachFromTo(p1,p2)
             self.plan.append(action)
             p1=p2
-        
+
+        self.plan.append("up")   
         print(self.plan)
             
     def howToReachFromTo(self,p1,p2):#devolve a acao que deve ser executada para ir de um ponto para outro adjacente
-        if(p1[0] == p2[0] and p1[1] < p2[1]):
+        if(abs(p1[0] - p2[0]) < 10 and p1[1] < p2[1]):
             return "down"#nao tenho a certeza se este ta certo
-        if(p1[0] == p2[0] and  p1[1] > p2[1]):
+        if(abs(p1[0] - p2[0]) < 10 and  p1[1] > p2[1]):
             return "up"#nao tenho a certeza se este ta certo
-        if(p1[0] < p2[0] and p1[1] == p2[1]):
+        if(p1[0] < p2[0]):
             return "right"
-        if(p1[0] > p2[0] and  p1[1] == p2[1]):
+        if(p1[0] > p2[0]):
             return "left"
 
 
@@ -449,8 +453,8 @@ class Frog(Object):
         n1.point = p1
         queue.append(n1)
         
-        row = [-39, 0, 0, 39]
-        col = [0, -39, 39, 0]
+        row = [0, -39, 39, 0]
+        col = [-39, 0, 0, 39]
         #    up,left,right,down
         acts = ["up","left","right","down"]
         
@@ -461,21 +465,26 @@ class Frog(Object):
                 x = point[0] + row[i]
                 y = point[1] + col[i]
                 #if(x == p2[0] and y == p2[1]):
-                if(x - p2[0] < 5  and y - p2[1]< 5):
+                if(abs(x - p2[0]) < 17  and abs(y - p2[1])< 17):#este 20 aqui nao pode estar certo...
                     ret = Node()
                     ret.point = p2
                     ret.parent = n
-                    return ret    #(point not in self.known_map.keys() or acts[i] not in self.known_map[point]) 
-                if(  visited[x,y] == 0 and x>2 and x<401 and y>39 and y<473):
-                    visited[x,y] = 1
-                    new=Node()
-                    new.point=(x,y)
-                    new.parent= n
-                    queue.append(new)
+                    return ret
+                if (((point[0],point[1]) not in self.known_map.keys() or acts[i] not in self.known_map[(point[0],point[1])])):
+                    #print(self.known_map)
+                    #print("Para o ponto:" + str(point) + " entrei para a acao:"+ acts[i] + ".")
+                    aux = visited[x,y] == 0
+                    if(visited[x,y] == 0 and x>2 and x<401 and y>39 and y<=475):
+                        visited[x,y] = 1
+                        new=Node()
+                        new.point=(x,y)
+                        new.parent= n
+                        queue.append(new)
         return None
     
     def executeAction(self):#executa a acao que esta na primeira posicao do plano
         action = self.plan.pop(0)
+        print("Posicao:" + str(self.position))
         self.act(action)
 
     def setPositionToInitialPosition(self):
