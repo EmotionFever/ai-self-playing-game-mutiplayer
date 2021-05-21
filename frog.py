@@ -288,12 +288,13 @@ class Frog(Object):
             self.executeAction()
         else:
             self.buildPlan()
+            print("not sound")
         
 
     def deliberate(self):#escolhe o desire para intention
         if(len(self.desires) !=0 ) :
             self.intention=self.desires[randrange(len(self.desires))]
-        self.intention = (209,9)
+        self.intention = (371,9)
 
     def updateBeliefs(self,enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs):
         #olha a volta e melhora o internal state (know_map)
@@ -434,10 +435,10 @@ class Frog(Object):
         print(self.plan)
             
     def howToReachFromTo(self,p1,p2):#devolve a acao que deve ser executada para ir de um ponto para outro adjacente
-        if(abs(p1[0] - p2[0]) < 10 and p1[1] < p2[1]):
-            return "down"#nao tenho a certeza se este ta certo
-        if(abs(p1[0] - p2[0]) < 10 and  p1[1] > p2[1]):
-            return "up"#nao tenho a certeza se este ta certo
+        if(abs(p1[0] - p2[0]) < 14 and p1[1] < p2[1]):
+            return "down"
+        if(abs(p1[0] - p2[0]) < 14 and  p1[1] > p2[1]):
+            return "up"
         if(p1[0] < p2[0]):
             return "right"
         if(p1[0] > p2[0]):

@@ -132,8 +132,8 @@ def createEnemys(list,enemys,game):
                 enemys.append(enemy)
                 
 
-position_init_platforms = [[60,200],[220,200],[140,161],[62,122], [220,122],[0,83],[290,83],[50,44],[220,44],[370,44]]
-
+position_init_platforms = [[60,200],[220,200],[140,161],[60,122], [220,122],[0,83],[290,83],[50,44],[220,44],[370,44]]
+                                                         #62
 #Criar plataformas
 def createPlatform(list,plataforms,game):
     for i, tick in enumerate(list):
@@ -313,10 +313,10 @@ while True:
     # initial Frogs at the moment there are 2 
     frog_initial_positions = []
     frogs = []
-    #frog_initial_positions.append([43 ,475])
+    frog_initial_positions.append([43 ,475])
     #frog_initial_positions.append([125,475])
     #frog_initial_positions.append([207,475])
-    frog_initial_positions.append([289,475])
+    #frog_initial_positions.append([289,475])
     #frog_initial_positions.append([371,475])
     
     
@@ -383,7 +383,7 @@ while True:
             #decision = frogs[i].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
             #frogs[i].act(decision)
             frogs[i].deliberativeDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
-        
+            aux=0
         #time.sleep(0.200)
 
         # for frog in frogs:
