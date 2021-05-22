@@ -324,7 +324,7 @@ while True:
     #frog_initial_positions.append([277,475]) #277
     #frog_initial_positions.append([355,475]) #355
     
-    #frogs.append(Frog(frog_initial_positions[0],sprite_sapo))
+    frogs.append(Frog(frog_initial_positions[0],sprite_sapo))
     #frogs.append(Frog(frog_initial_positions[1],sprite_sapo))
     #frogs.append(Frog(frog_initial_positions[2],sprite_sapo))
     #frogs.append(Frog(frog_initial_positions[3],sprite_sapo))
