@@ -152,8 +152,8 @@ class Frog(Object):
         
         #self.drawRectangle(self.rect(), False, screen)
 
-        for plat in platforms:
-            self.drawRectangle(plat.rect(),False,screen)
+        # for plat in platforms:
+        #     self.drawRectangle(plat.rect(),False,screen)
 
         self.canMoveUp = self.position[1] > 39
         self.canMoveDown = self.position[1] < 473
@@ -403,7 +403,7 @@ class Frog(Object):
                 self.known_map[(posX,posY)] = set()
             self.known_map[(posX,posY)].update(prohibited_actions)
         
-            self.sendMessage((posX,posY),prohibited_actions,frogs)
+        self.sendMessage((posX,posY),prohibited_actions,frogs)
         
         #ISTO NAO PODE SAIR DAQUI, ** POR BAIXO DO ATUALIZAR DO KNOW_MAP **
         # Verificar colisoes com outros sapos

@@ -49,6 +49,8 @@ sprite_plataform_quad = pygame.image.load(plataform_quad_filename).convert_alpha
 pygame.display.set_caption('Frogger')
 clock = pygame.time.Clock()
 
+numberOfArrived=0
+
 #Funções gerais
 #Desenhar a lista dos inimigos/plataformas
 def drawList(list):
@@ -224,27 +226,27 @@ def frogInTheLake(frog,plataforms,game):
 
 def frogArrived(frog,chegaram,game):
     if frog.position[0] > 33 and frog.position[0] < 53: #primeira posicao de chegada
-        position_init = [43,7] #posicao onde chegou
+        position_init = [47,9] #posicao onde chegou
         frog.position = [47,9]
         createArrived(frog,chegaram,game,position_init) # adicionar o sapo a lista dos chegados
 
     elif frog.position[0] > 115 and frog.position[0] < 135:
-        position_init = [125,7]
+        position_init = [128,9]
         frog.position = [128,9]
         createArrived(frog,chegaram,game,position_init)
 
     elif frog.position[0] > 197 and frog.position[0] < 217:
-        position_init = [207,7]
+        position_init = [209,9]
         frog.position = [209,9]
         createArrived(frog,chegaram,game,position_init)
 
     elif frog.position[0] > 276 and frog.position[0] < 296:
-        position_init = [289,7]
+        position_init = [290,9]
         frog.position = [290,9]
         createArrived(frog,chegaram,game,position_init)
 
     elif frog.position[0] > 354 and frog.position[0] < 381:
-        position_init = [371,7]
+        position_init = [371,9]
         frog.position = [371,9]
         createArrived(frog,chegaram,game,position_init)
 
@@ -268,16 +270,18 @@ def whereIsTheFrog(frog):
     elif frog.position[1] < 40 :
         frogArrived(frog,chegaram,game)
 
-
 def createArrived(frog,chegaram,game,position_init):
-    sapo_chegou = Object(position_init,sprite_arrived)
+    #sapo_chegou = Object(position_init,sprite_arrived)
     #chegaram.append(sapo_chegou)
     #frog.setPositionToInitialPosition()
+    if position_init not in chegaram:
+        chegaram.append(position_init)
+
     game.incPoints(10 + game.time) 
 
-    frog.animation_counter = 0
-    frog.animation_tick = 1
-    frog.can_move = 0
+    #frog.animation_counter = 0
+    #frog.animation_tick = 1
+    #frog.can_move = 0
     """
     game.resetTime()
     """
@@ -422,7 +426,7 @@ while True:
 
         drawList(enemys)
         drawList(plataforms[:-10]) # desenhar todas as plataformas menos as 10 ultimas que são aquelas extra...
-        drawList(chegaram)
+        #drawList(chegaram)
 
         for i in range(len(frogs)):
             frogs[i].animateFrog(key_pressed,key_up)
