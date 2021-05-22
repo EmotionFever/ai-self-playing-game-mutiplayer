@@ -144,11 +144,13 @@ class Frog(Object):
         self.incSteps()
         #criar plataforms
         platforms=platforms_in.copy()
+
+        print(self.position)
         
         #self.drawRectangle(self.rect(), False, screen)
 
-        # for plat in platforms:
-        #     self.drawRectangle(plat.rect(),screen)
+        for plat in platforms:
+            self.drawRectangle(plat.rect(),False,screen)
 
         self.canMoveUp = self.position[1] > 39
         self.canMoveDown = self.position[1] < 473
@@ -190,7 +192,7 @@ class Frog(Object):
         #Se o sapo chegou no rio
         #O sapo pode andar se houver um tronco na posicao old: < 240
         elif self.position[1] < 270 and self.position[1] > 40:
-            print("Esta no rio")
+            #print("Esta no rio")
             self.canMoveUp=False
             self.canMoveDown=False
             self.canMoveLeft=False
@@ -244,10 +246,10 @@ class Frog(Object):
         self.drawRectangle(rightRect, self.canMoveRight, screen)
         #ate aqui, o sapo ja consegue sabe tudo a sua volta
 
-        print("canMoveUp:" + str(self.canMoveUp))
-        print("canMoveDown:" + str(self.canMoveDown))
-        print("canMoveLeft:" + str(self.canMoveLeft))
-        print("canMoveRight:" + str(self.canMoveRight))
+        #print("canMoveUp:" + str(self.canMoveUp))
+        #print("canMoveDown:" + str(self.canMoveDown))
+        #print("canMoveLeft:" + str(self.canMoveLeft))
+        #print("canMoveRight:" + str(self.canMoveRight))
 
         
         #possible_actions = [true, false, true, true]
@@ -294,7 +296,7 @@ class Frog(Object):
     def deliberate(self):#escolhe o desire para intention
         if(len(self.desires) !=0 ) :
             self.intention=self.desires[randrange(len(self.desires))]
-        self.intention = (371,9)
+        #self.intention = (371,9)
 
     def updateBeliefs(self,enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs):
         #olha a volta e melhora o internal state (know_map)

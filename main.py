@@ -182,9 +182,10 @@ def createPlatform(list,plataforms,game):
     offset_plats=0
     offset_nenufar=0
     for i in range(5):
+        #plataformas na parte do meio 
         platform = Platform([offset_plats,240],sprite_plataform,"right")
         plataforms.append(platform)
-    
+        #plataformas para os nenufares
         platform_final = Platform([offset_nenufar+47,9],sprite_plataform_quad,"right")
         plataforms.append(platform_final)
 
@@ -382,7 +383,8 @@ while True:
         for i in range (0, len(frogs)):
             #decision = frogs[i].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
             #frogs[i].act(decision)
-            frogs[i].deliberativeDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
+            #frogs[i].deliberativeDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
+            print(frogs[i].position)
             aux=0
         #time.sleep(0.200)
 
