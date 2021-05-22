@@ -92,7 +92,7 @@ class Frog(Object):
             elif key_pressed == "right":
                 self.moveRight()
 
-    def animateFrog(self,key_pressed,key_up):
+    def animateFrog(self,key_pressed,key_up):#nao esta a fazer nada...
         if self.animation_counter != 0 :
             if self.animation_tick <= 0 :
                 self.moveFrog(key_pressed,key_up)
@@ -296,7 +296,7 @@ class Frog(Object):
     def deliberate(self):#escolhe o desire para intention
         if(len(self.desires) !=0 ) :
             self.intention=self.desires[randrange(len(self.desires))]
-        #self.intention = (371,9)
+        self.intention = (371,9)
 
     def updateBeliefs(self,enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs):
         #olha a volta e melhora o internal state (know_map)

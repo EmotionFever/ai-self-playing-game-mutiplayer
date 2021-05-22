@@ -225,22 +225,27 @@ def frogInTheLake(frog,plataforms,game):
 def frogArrived(frog,chegaram,game):
     if frog.position[0] > 33 and frog.position[0] < 53: #primeira posicao de chegada
         position_init = [43,7] #posicao onde chegou
+        frog.position[0] = 43
         createArrived(frog,chegaram,game,position_init) # adicionar o sapo a lista dos chegados
 
     elif frog.position[0] > 115 and frog.position[0] < 135:
         position_init = [125,7]
+        frog.position[0] = 125
         createArrived(frog,chegaram,game,position_init)
 
     elif frog.position[0] > 197 and frog.position[0] < 217:
         position_init = [207,7]
+        frog.position[0] = 207
         createArrived(frog,chegaram,game,position_init)
 
-    elif frog.position[0] > 279 and frog.position[0] < 299:
+    elif frog.position[0] > 276 and frog.position[0] < 296:
         position_init = [289,7]
+        frog.position[0] = 289
         createArrived(frog,chegaram,game,position_init)
 
-    elif frog.position[0] > 361 and frog.position[0] < 381:
+    elif frog.position[0] > 354 and frog.position[0] < 381:
         position_init = [371,7]
+        frog.position[0] = 371
         createArrived(frog,chegaram,game,position_init)
 
     else:
@@ -360,6 +365,7 @@ while True:
                 if key_up==1 and frogs[0].can_move == 1:
                     key_pressed = pygame.key.name(event.key)
                     frogs[0].moveFrog(key_pressed,key_up)
+                   
                 # for frog in frogs:
                 #     # frog.frogDecision(enemys,plataforms)
                 #     if key_up == 1  and frog.can_move == 1:
@@ -383,8 +389,8 @@ while True:
         for i in range (0, len(frogs)):
             #decision = frogs[i].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
             #frogs[i].act(decision)
-            #frogs[i].deliberativeDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
-            print(frogs[i].position)
+            frogs[i].deliberativeDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
+            #print(frogs[i].position)
             aux=0
         #time.sleep(0.200)
 
