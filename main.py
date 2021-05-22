@@ -389,7 +389,7 @@ while True:
             #frogs[i].act(decision)
             frogs[i].deliberativeDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
             #print(frogs[i].position)
-            aux=0
+            #aux=0
         #time.sleep(0.200)
 
         # for frog in frogs:
