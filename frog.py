@@ -30,6 +30,7 @@ class Frog(Object):
         self.canMoveDown=False
         self.canMoveRight=False
         self.canMoveLeft=False
+        self.numberOfPlans=0
         
         for i in range(5):#estes sao os desires que pode ter (nenufares)
             self.desires.append((47+aux,9))
@@ -277,26 +278,30 @@ class Frog(Object):
     ################################# END OF REACTIVE ###################################################################
 
     ############################ Deliberative ##########################################################
-    def deliberativeDecision(self,enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs):#TODO
+    def deliberativeDecision(self,enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs):
+        
         self.updateBeliefs(enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs)
         #se nao tem intention, obtem uma nova
         if (self.intention==None):
             self.deliberate()
-        #se o plano estiver vazio entao criar um plano
-        if (len(self.plan) == 0):
-            self.buildPlan()
-        #se o plano nao estiver vazio, *tentar* correr a primeira acao usando a funcao sound
-        if (self.sound()):
-            self.executeAction()
+        if (not(self.position[0] == self.intention[0] and self.position[1] == self.intention[1])):
+            #se o plano estiver vazio entao criar um plano
+            if (len(self.plan) == 0):
+                self.buildPlan()
+            #se o plano nao estiver vazio, *tentar* correr a primeira acao usando a funcao sound
+            if (self.sound()):
+                self.executeAction()
+            else:
+                self.buildPlan()
+                self.numberOfPlans+=1
+                print("not sound")
         else:
-            self.buildPlan()
-            print("not sound")
-        
+            print("Number of plans:", self.numberOfPlans)
 
     def deliberate(self):#escolhe o desire para intention
         if(len(self.desires) !=0 ) :
             self.intention=self.desires[randrange(len(self.desires))]
-        self.intention = (371,9)
+        #self.intention = (371,9)#47,128,209,290,371
 
     def updateBeliefs(self,enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs):
         #olha a volta e melhora o internal state (know_map)
@@ -439,7 +444,7 @@ class Frog(Object):
     def howToReachFromTo(self,p1,p2):#devolve a acao que deve ser executada para ir de um ponto para outro adjacente
         if(abs(p1[0] - p2[0]) < 14 and p1[1] < p2[1]):
             return "down"
-        if(abs(p1[0] - p2[0]) < 14 and  p1[1] > p2[1]):
+        if((abs(p1[0] - p2[0]) <= 16 and  p1[1] > p2[1])):
             return "up"
         if(p1[0] < p2[0]):
             return "right"
