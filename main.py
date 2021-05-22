@@ -223,36 +223,67 @@ def frogInTheLake(frog,plataforms,game):
     #         frog.position[0] = frog.position[0] - game.speed
 
 def frogArrived(frog,chegaram,game):
-    if frog.position[0] > 33 and frog.position[0] < 53: #primeira posicao de chegada
-        position_init = [43,7] #posicao onde chegou
-        frog.position = (47,9)
-        createArrived(frog,chegaram,game,position_init) # adicionar o sapo a lista dos chegados
+    if frog.can_move==1:
+        if frog.position[0] > 33 and frog.position[0] < 53: #primeira posicao de chegada
+            position_init = [43,7] #posicao onde chegou
+            frog.position = (47,9)
+            if len(frogs) < 5:
+                new_frog = Frog(frog.initial_pos,sprite_sapo)
+                new_frog.desires = frog.desires.copy()
+                new_frog.desires.remove(frog.position)
+                new_frog.known_map = frog.known_map.copy()
+                frogs.append(new_frog)
+            createArrived(frog,chegaram,game,position_init) # adicionar o sapo a lista dos chegados
 
-    elif frog.position[0] > 115 and frog.position[0] < 135:
-        position_init = [125,7]
-        frog.position = (128,9)
-        createArrived(frog,chegaram,game,position_init)
+        elif frog.position[0] > 115 and frog.position[0] < 135:
+            position_init = [125,7]
+            frog.position = (128,9)
+            if len(frogs) < 5:
+                new_frog = Frog(frog.initial_pos,sprite_sapo)
+                new_frog.desires = frog.desires.copy()
+                new_frog.desires.remove(frog.position)
+                new_frog.known_map = frog.known_map.copy()
+                frogs.append(new_frog)
+            createArrived(frog,chegaram,game,position_init)
 
-    elif frog.position[0] > 197 and frog.position[0] < 217:
-        position_init = [207,7]
-        frog.position = (209,9)
-        createArrived(frog,chegaram,game,position_init)
+        elif frog.position[0] > 197 and frog.position[0] < 217:
+            position_init = [207,7]
+            frog.position = (209,9)
+            if len(frogs) < 5:
+                new_frog = Frog(frog.initial_pos,sprite_sapo)
+                new_frog.desires = frog.desires.copy()
+                new_frog.desires.remove(frog.position)
+                new_frog.known_map = frog.known_map.copy()
+                frogs.append(new_frog)
+            createArrived(frog,chegaram,game,position_init)
 
-    elif frog.position[0] > 276 and frog.position[0] < 296:
-        position_init = [289,7]
-        frog.position = (290,9)
-        createArrived(frog,chegaram,game,position_init)
+        elif frog.position[0] > 276 and frog.position[0] < 296:
+            position_init = [289,7]
+            frog.position = (290,9)
+            if len(frogs) < 5:
+                new_frog = Frog(frog.initial_pos,sprite_sapo)
+                new_frog.desires = frog.desires.copy()
+                new_frog.desires.remove(frog.position)
+                new_frog.known_map = frog.known_map.copy()
+                frogs.append(new_frog)
+            createArrived(frog,chegaram,game,position_init)
 
-    elif frog.position[0] > 354 and frog.position[0] < 381:
-        position_init = [371,7]
-        frog.position = (371,9)
-        createArrived(frog,chegaram,game,position_init)
+        elif frog.position[0] > 354 and frog.position[0] < 381:
+            position_init = [371,7]
+            frog.position = (371,9)
+            if len(frogs) < 5:
+                new_frog = Frog(frog.initial_pos,sprite_sapo)
+                new_frog.desires = frog.desires.copy()
+                new_frog.desires.remove(frog.position)
+                new_frog.known_map = frog.known_map.copy()
+                frogs.append(new_frog)
+            createArrived(frog,chegaram,game,position_init)
 
-    else:
-        frog.position[1] = 46
-        frog.animation_counter = 0
-        frog.animation_tick = 1
-        frog.can_move = 1
+        else:
+            frog.position[1] = 46
+            frog.animation_counter = 0
+            frog.animation_tick = 1
+            frog.can_move = 1
 
 
 def whereIsTheFrog(frog):
@@ -267,6 +298,7 @@ def whereIsTheFrog(frog):
     #sapo chegou no objetivo
     elif frog.position[1] < 40 :
         frogArrived(frog,chegaram,game)
+        frog.can_move=0
 
 
 def createArrived(frog,chegaram,game,position_init):

@@ -146,7 +146,7 @@ class Frog(Object):
         #criar plataforms
         platforms=platforms_in.copy()
 
-        print(self.position)
+        #print(self.position)
         
         #self.drawRectangle(self.rect(), False, screen)
 
@@ -294,11 +294,12 @@ class Frog(Object):
             else:
                 self.buildPlan()
                 self.numberOfPlans+=1
-                print("not sound")
+                #print("not sound")
         else:
-            print("Number of plans:", self.numberOfPlans)
+            #print("Number of plans:", self.numberOfPlans)
+            return
 
-    def deliberate(self):#escolhe o desire para intention
+    def deliberate(self):#escolhe o desire para intentions
         if(len(self.desires) !=0 ) :
             self.intention=self.desires[randrange(len(self.desires))]
         #self.intention = (371,9)#47,128,209,290,371
@@ -341,7 +342,7 @@ class Frog(Object):
         #Se o sapo chegou no rio
         #O sapo pode andar se houver um tronco na posicao old: < 240
         elif self.position[1] < 270 and self.position[1] > 40:
-            print("Esta no rio")
+            #print("Esta no rio")
             self.canMoveUp=False
             self.canMoveDown=False
             self.canMoveLeft=False
@@ -423,13 +424,13 @@ class Frog(Object):
     def buildPlan(self):#usando o shortestPath, cria uma lista de acoes a executar
         #FOR pelos RECTS do shortestPath e ve como passar de um rect para outro
         res = self.shortestPath(self.position,self.intention)
-        print(self.intention)
+        #print("INTENTION" , self.intention)
         path = [res.point]
         while(res.parent != None):
             res = res.parent
             path.insert(0,res.point)
         # o path tem os varios pontos por onde tem de passar
-        print(path)
+        #print(path)
         self.plan = []
         p1 = path.pop(0)
         while(len(path) > 0):
@@ -439,7 +440,7 @@ class Frog(Object):
             p1=p2
 
         self.plan.append("up")   
-        print(self.plan)
+        #print(self.plan)
             
     def howToReachFromTo(self,p1,p2):#devolve a acao que deve ser executada para ir de um ponto para outro adjacente
         if(abs(p1[0] - p2[0]) < 14 and p1[1] < p2[1]):
@@ -493,7 +494,7 @@ class Frog(Object):
     
     def executeAction(self):#executa a acao que esta na primeira posicao do plano
         action = self.plan.pop(0)
-        print("Posicao:" + str(self.position))
+        #print("Posicao:" + str(self.position))
         self.act(action)
 
     def setPositionToInitialPosition(self):
