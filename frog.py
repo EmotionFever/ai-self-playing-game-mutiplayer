@@ -7,6 +7,7 @@ from random import randrange
 
 MOVE_DISTANCE = 39
 MOVE_DISTANCE_PREDICTION = 39 #35 esta muito perto
+NUMBER_OF_REACTIVE_STEPS = 3
 
 class Node(object):
     point = tuple()
@@ -24,13 +25,14 @@ class Frog(Object):
         self.way = "down"
         self.can_move = 1
         self.known_map =  dict() #dicionario com acoes que nao se devem executar num ponto
-        self.desires=[] #TODO RECTS INICIAIS DOS NENUFARES nenufares possiveis de atingir
+        self.desires=[] #posicoes dos nenufares possiveis de atingir
         aux=0 
         self.canMoveUp=False
         self.canMoveDown=False
         self.canMoveRight=False
         self.canMoveLeft=False
         self.numberOfPlans=0
+        self.become_reactive=0
         
         for i in range(5):#estes sao os desires que pode ter (nenufares)
             self.desires.append((47+aux,9))
@@ -140,13 +142,13 @@ class Frog(Object):
     ############################ REACTIVE ##########################################################################
     
     def frogDecision(self,enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs):
-        if(self.can_move==0):
-            return
+        #if(self.can_move==0):
+        #    return
         self.incSteps()
         #criar plataforms
         platforms=platforms_in.copy()
 
-        print(self.position)
+        #print(self.position)
         
         #self.drawRectangle(self.rect(), False, screen)
 
@@ -279,28 +281,39 @@ class Frog(Object):
 
     ############################ Deliberative ##########################################################
     def deliberativeDecision(self,enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs):
-        
         self.updateBeliefs(enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs)
-        #se nao tem intention, obtem uma nova
-        if (self.intention==None):
-            self.deliberate()
-        if (not(self.position[0] == self.intention[0] and self.position[1] == self.intention[1])):
-            #se o plano estiver vazio entao criar um plano
-            if (len(self.plan) == 0):
-                self.buildPlan()
-            #se o plano nao estiver vazio, *tentar* correr a primeira acao usando a funcao sound
-            if (self.sound()):
-                self.executeAction()
-            else:
-                self.buildPlan()
-                self.numberOfPlans+=1
-                print("not sound")
+        #se esta encurralado
+        if self.become_reactive>0:# tornar-se reativo durante alguns steps
+            decision = self.frogDecision(enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs)
+            self.act(decision)
+            self.become_reactive-=1
         else:
-            print("Number of plans:", self.numberOfPlans)
+            #print("Tou a tentar ser deliberativo")
+            #se nao tem intention, obtem uma nova
+            if (self.intention==None):
+                self.deliberate(frogs)
+            if (not(self.position[0] == self.intention[0] and self.position[1] == self.intention[1])):
+                #se o plano estiver vazio entao criar um plano
+                if (len(self.plan) == 0):
+                    self.buildPlan()
+                #se o plano nao estiver vazio, *tentar* correr a primeira acao usando a funcao sound
+                if (self.sound()):
+                    self.executeAction()
+                else: #se o plano nao e sound, replanear
+                    previous_plan = self.plan
+                    self.buildPlan()
+                    if self.plan == previous_plan: # se o novo plano e igual ao anterior
+                        self.become_reactive = NUMBER_OF_REACTIVE_STEPS # tornar o agente reativo por x steps
+                    self.numberOfPlans+=1
+                    #print("not sound")
+            else:
+                #print("Number of plans:", self.numberOfPlans)
+                return
 
-    def deliberate(self):#escolhe o desire para intention
-        if(len(self.desires) !=0 ) :
-            self.intention=self.desires[randrange(len(self.desires))]
+    def deliberate(self,frogs):#escolhe o desire para intention
+        if(len(self.desires) != 0 ) :
+            self.intention=self.desires[randrange(len(self.desires))] # o sapo escolhe a sua intention
+        self.sendMessage(None,self.intention,frogs) #e comunica-a aos outros 
         #self.intention = (371,9)#47,128,209,290,371
 
     def updateBeliefs(self,enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs):
@@ -341,7 +354,7 @@ class Frog(Object):
         #Se o sapo chegou no rio
         #O sapo pode andar se houver um tronco na posicao old: < 240
         elif self.position[1] < 270 and self.position[1] > 40:
-            print("Esta no rio")
+            #print("Esta no rio")
             self.canMoveUp=False
             self.canMoveDown=False
             self.canMoveLeft=False
@@ -390,6 +403,8 @@ class Frog(Object):
                 self.known_map[(posX,posY)] = set()
             self.known_map[(posX,posY)].update(prohibited_actions)
         
+            self.sendMessage((posX,posY),prohibited_actions,frogs)
+        
         #ISTO NAO PODE SAIR DAQUI, ** POR BAIXO DO ATUALIZAR DO KNOW_MAP **
         # Verificar colisoes com outros sapos
         for frog in frogs:
@@ -423,13 +438,13 @@ class Frog(Object):
     def buildPlan(self):#usando o shortestPath, cria uma lista de acoes a executar
         #FOR pelos RECTS do shortestPath e ve como passar de um rect para outro
         res = self.shortestPath(self.position,self.intention)
-        print(self.intention)
+        #print(self.intention)
         path = [res.point]
         while(res.parent != None):
             res = res.parent
             path.insert(0,res.point)
         # o path tem os varios pontos por onde tem de passar
-        print(path)
+        #print(path)
         self.plan = []
         p1 = path.pop(0)
         while(len(path) > 0):
@@ -439,7 +454,7 @@ class Frog(Object):
             p1=p2
 
         self.plan.append("up")   
-        print(self.plan)
+        #print(self.plan)
             
     def howToReachFromTo(self,p1,p2):#devolve a acao que deve ser executada para ir de um ponto para outro adjacente
         if(abs(p1[0] - p2[0]) < 14 and p1[1] < p2[1]):
@@ -493,8 +508,21 @@ class Frog(Object):
     
     def executeAction(self):#executa a acao que esta na primeira posicao do plano
         action = self.plan.pop(0)
-        print("Posicao:" + str(self.position))
+        #print("Posicao:" + str(self.position))
         self.act(action)
+    
+    def sendMessage(self,msg_point,message,frogs):#enviar mensagem para os outros sapos
+        for frog in frogs:
+            frog.receiveMessage(msg_point,message)
+
+    def receiveMessage(self,msg_point,message):#receber uma mensagem enviada por outro sapo
+        if type(message) == list: #se for uma mensagem para atualizar o known_map
+            self.known_map[msg_point] = set() #guarda a informacao mais recente
+            self.known_map[msg_point].update(message)
+        
+        if type(message) == tuple: #se for uma mensagem para comunicar intentions
+            self.desires.remove(message)
+
 
     def setPositionToInitialPosition(self):
         self.position = self.initial_pos.copy()
@@ -508,3 +536,5 @@ class Frog(Object):
     
     def act(self,decision):
         self.moveFrog(decision,1)
+
+

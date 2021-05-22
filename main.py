@@ -225,27 +225,27 @@ def frogInTheLake(frog,plataforms,game):
 def frogArrived(frog,chegaram,game):
     if frog.position[0] > 33 and frog.position[0] < 53: #primeira posicao de chegada
         position_init = [43,7] #posicao onde chegou
-        frog.position = (47,9)
+        frog.position = [47,9]
         createArrived(frog,chegaram,game,position_init) # adicionar o sapo a lista dos chegados
 
     elif frog.position[0] > 115 and frog.position[0] < 135:
         position_init = [125,7]
-        frog.position = (128,9)
+        frog.position = [128,9]
         createArrived(frog,chegaram,game,position_init)
 
     elif frog.position[0] > 197 and frog.position[0] < 217:
         position_init = [207,7]
-        frog.position = (209,9)
+        frog.position = [209,9]
         createArrived(frog,chegaram,game,position_init)
 
     elif frog.position[0] > 276 and frog.position[0] < 296:
         position_init = [289,7]
-        frog.position = (290,9)
+        frog.position = [290,9]
         createArrived(frog,chegaram,game,position_init)
 
     elif frog.position[0] > 354 and frog.position[0] < 381:
         position_init = [371,7]
-        frog.position = (371,9)
+        frog.position = [371,9]
         createArrived(frog,chegaram,game,position_init)
 
     else:
@@ -319,16 +319,16 @@ while True:
     frog_initial_positions = []
     frogs = []
     frog_initial_positions.append([43 ,475])
-    #frog_initial_positions.append([121,475]) #121
-    #frog_initial_positions.append([199,475]) #199
-    #frog_initial_positions.append([277,475]) #277
-    #frog_initial_positions.append([355,475]) #355
+    frog_initial_positions.append([121,475]) #121
+    frog_initial_positions.append([199,475]) #199
+    frog_initial_positions.append([277,475]) #277
+    frog_initial_positions.append([355,475]) #355
     
     frogs.append(Frog(frog_initial_positions[0],sprite_sapo))
-    #frogs.append(Frog(frog_initial_positions[1],sprite_sapo))
-    #frogs.append(Frog(frog_initial_positions[2],sprite_sapo))
-    #frogs.append(Frog(frog_initial_positions[3],sprite_sapo))
-    #frogs.append(Frog(frog_initial_positions[4],sprite_sapo))
+    frogs.append(Frog(frog_initial_positions[1],sprite_sapo))
+    frogs.append(Frog(frog_initial_positions[2],sprite_sapo))
+    frogs.append(Frog(frog_initial_positions[3],sprite_sapo))
+    frogs.append(Frog(frog_initial_positions[4],sprite_sapo))
 
     enemys = []
     plataforms = []
@@ -390,7 +390,7 @@ while True:
             frogs[i].deliberativeDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
             #print(frogs[i].position)
             #aux=0
-        #time.sleep(0.200)
+        time.sleep(0.200)
 
         # for frog in frogs:
         #     for 
