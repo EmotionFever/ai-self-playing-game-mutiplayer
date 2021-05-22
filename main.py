@@ -81,8 +81,38 @@ def destroyPlataforms(list):
 position_init_cars = [[0,436], [160,436],[320,436],[40, 397],[160, 397] ,[380, 397],
                         [165, 357],[250, 357],[0, 318],[136, 318],[316, 280],[220, 280]]
 
-#Criar os carros
 def createEnemys(list,enemys,game):
+    for i, tick in enumerate(list):
+        list[i] = list[i] - 1
+        if tick <= 0:
+            if i == 0:
+                list[0] = (40*game.speed)/game.level
+                position_init = [-55,436]
+                enemy = Enemy(position_init,sprite_car1,"right",1)
+                enemys.append(enemy)
+            elif i == 1:
+                list[1] = (30*game.speed)/game.level
+                position_init = [506, 397]
+                enemy = Enemy(position_init,sprite_car2,"left",2)
+                enemys.append(enemy)
+            elif i == 2:
+                list[2] = (40*game.speed)/game.level
+                position_init = [-80, 357]
+                enemy = Enemy(position_init,sprite_car3,"right",2)
+                enemys.append(enemy)
+            elif i == 3:
+                list[3] = (30*game.speed)/game.level
+                position_init = [516, 318]
+                enemy = Enemy(position_init,sprite_car4,"left",1)
+                enemys.append(enemy)
+            elif i == 4:
+                list[4] = (50*game.speed)/game.level
+                position_init = [-56, 280]
+                enemy = Enemy(position_init,sprite_car5,"right",1)
+                enemys.append(enemy)
+
+#Criar os carros
+def createEnemys2(list,enemys,game):
     for i, tick in enumerate(list):
         list[i] = list[i] - 1
         if tick <= 0: 
@@ -292,8 +322,8 @@ def nextLevel(chegaram,enemys,plataforms,frogs,game):
         chegaram[:] = []
         for frog in frogs:
             frog.setPositionToInitialPosition()
-        game.incLevel()
-        game.incSpeed()
+        #game.incLevel()
+        #game.incSpeed()
         game.incPoints(100)
         game.resetTime()
 
@@ -319,6 +349,7 @@ while gameInit == 0:
 while True:
     gameInit = 1
     game = Game(3,1)
+    game.speed=10
     key_up = 1
     frog_initial_positions = []
     frogs = []
@@ -339,18 +370,18 @@ while True:
     chegaram = []
     #30 ticks == 1 segundo
     #ticks_enemys = [120, 90, 120, 90, 150]
+    ticks_enemys = [0, 0, 0, 0, 0]
     #ticks_plataforms = [90, 90, 120, 120, 60]
     #ticks_enemys = [30, 0, 30, 0, 60]
-    ticks_enemys = [0, 0, 0, 0, 0]
+    #ticks_enemys = [0, 0, 0, 0, 0]
     # ticks_plataforms = [0, 0, 30, 30, 30]
     ticks_plataforms = [0, 0, 0, 0, 0]
     ticks_time = 30
     pressed_keys = 0
     key_pressed = 0
-
+    
     createEnemys(ticks_enemys,enemys,game)
     createPlatform(ticks_plataforms,plataforms,game)
-
     while True: # before we finished the game when they were all dead
         # frogs[0].frogDecision(enemys,plataforms)
         # Handler to get events from keyboard
@@ -382,7 +413,7 @@ while True:
         else:
             ticks_time -= 1
 
-        # createEnemys(ticks_enemys,enemys,game)
+        createEnemys(ticks_enemys,enemys,game)
         # createPlatform(ticks_plataforms,plataforms,game)
 
         #decision = frogs[1].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
@@ -394,14 +425,14 @@ while True:
             frogs[i].deliberativeDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
             #print(frogs[i].position)
             #aux=0
-        time.sleep(0.200)
+        #time.sleep(0.200)
 
         # for frog in frogs:
         #     for 
         #     if frog.rect().colliderect
 
-        #moveList(enemys,game.speed)
-        #moveList(plataforms,game.speed)
+        moveList(enemys,game.speed)
+        #moveList(plataforms[:-10],game.speed)
 
         # text_info1 = info_font.render(('Level: {0}    Points: {1}'.format(game.level,game.points)),1,(255,255,255))
         text_info1 = info_font.render(('Level: {0}'.format(game.level)),1,(255,255,255))
@@ -432,7 +463,7 @@ while True:
             frogs[i].animateFrog(key_pressed,key_up)
             frogs[i].draw(screen)
             drawNumber(frogs[i].rect().x, frogs[i].rect().y, i, screen)
-        #destroyEnemys(enemys) nao precisamos de destruir os carros e plataformas no ambiente estatico
+        destroyEnemys(enemys) #nao precisamos de destruir os carros e plataformas no ambiente estatico
         #destroyPlataforms(plataforms)
 
         pygame.display.update()

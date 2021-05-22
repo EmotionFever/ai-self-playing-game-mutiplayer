@@ -439,22 +439,25 @@ class Frog(Object):
         #FOR pelos RECTS do shortestPath e ve como passar de um rect para outro
         res = self.shortestPath(self.position,self.intention)
         #print(self.intention)
-        path = [res.point]
-        while(res.parent != None):
-            res = res.parent
-            path.insert(0,res.point)
-        # o path tem os varios pontos por onde tem de passar
-        #print(path)
-        self.plan = []
-        p1 = path.pop(0)
-        while(len(path) > 0):
-            p2 = path.pop(0)
-            action = self.howToReachFromTo(p1,p2)
-            self.plan.append(action)
-            p1=p2
+        if res == None:
+            self.become_reactive = 5
+        else:
+            path = [res.point]
+            while(res.parent != None):
+                res = res.parent
+                path.insert(0,res.point)
+            # o path tem os varios pontos por onde tem de passar
+            #print(path)
+            self.plan = []
+            p1 = path.pop(0)
+            while(len(path) > 0):
+                p2 = path.pop(0)
+                action = self.howToReachFromTo(p1,p2)
+                self.plan.append(action)
+                p1=p2
 
-        self.plan.append("up")   
-        #print(self.plan)
+            self.plan.append("up")   
+            #print(self.plan)
             
     def howToReachFromTo(self,p1,p2):#devolve a acao que deve ser executada para ir de um ponto para outro adjacente
         if(abs(p1[0] - p2[0]) < 14 and p1[1] < p2[1]):
