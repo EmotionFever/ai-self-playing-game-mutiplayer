@@ -148,7 +148,7 @@ class Frog(Object):
         #Se o sapo ainda não passou da estrada
         #O sapo pode andar se nao houver um carro na posicao old: > 240
         if self.position[1] > 270 :
-            print("Esta na estrada")
+            #print("Esta na estrada")
             for car in enemys:#verificar se nao bate num carro
                 if canMoveUp and upRect.colliderect(car.rect()):
                     canMoveUp = False
@@ -170,7 +170,7 @@ class Frog(Object):
         #Se o sapo chegou no rio
         #O sapo pode andar se houver um tronco na posicao old: < 240
         elif self.position[1] < 270 and self.position[1] > 40:
-            print("Esta no rio")
+            #print("Esta no rio")
             canMoveUp=False
             canMoveDown=False
             canMoveLeft=False
@@ -224,10 +224,10 @@ class Frog(Object):
         self.drawRectangle(rightRect, canMoveRight, screen)
         #ate aqui, o sapo ja consegue sabe tudo a sua volta
 
-        print("canMoveUp:" + str(canMoveUp))
-        print("canMoveDown:" + str(canMoveDown))
-        print("canMoveLeft:" + str(canMoveLeft))
-        print("canMoveRight:" + str(canMoveRight))
+        #print("canMoveUp:" + str(canMoveUp))
+        #print("canMoveDown:" + str(canMoveDown))
+        #print("canMoveLeft:" + str(canMoveLeft))
+        #print("canMoveRight:" + str(canMoveRight))
 
         
         #possible_actions = [true, false, true, true]
