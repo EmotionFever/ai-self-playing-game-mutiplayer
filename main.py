@@ -233,6 +233,11 @@ def frogArrived(frog,chegaram,game):
                 new_frog.desires.remove(frog.position)
                 new_frog.known_map = frog.known_map.copy()
                 frogs.append(new_frog)
+                frogs.remove(frog)
+                game.totalSteps+=frog.steps
+                game.totalDeaths+=frog.deaths
+                game.totalPlans+=frog.numberOfPlans
+                chegaram.append(frog)
             createArrived(frog,chegaram,game,position_init) # adicionar o sapo a lista dos chegados
 
         elif frog.position[0] > 115 and frog.position[0] < 135:
@@ -244,6 +249,12 @@ def frogArrived(frog,chegaram,game):
                 new_frog.desires.remove(frog.position)
                 new_frog.known_map = frog.known_map.copy()
                 frogs.append(new_frog)
+                frogs.remove(frog)
+                game.totalSteps+=frog.steps
+                game.totalDeaths+=frog.deaths
+                game.totalPlans+=frog.numberOfPlans
+                chegaram.append(frog)
+                
             createArrived(frog,chegaram,game,position_init)
 
         elif frog.position[0] > 197 and frog.position[0] < 217:
@@ -255,6 +266,11 @@ def frogArrived(frog,chegaram,game):
                 new_frog.desires.remove(frog.position)
                 new_frog.known_map = frog.known_map.copy()
                 frogs.append(new_frog)
+                frogs.remove(frog)
+                game.totalSteps+=frog.steps
+                game.totalDeaths+=frog.deaths
+                game.totalPlans+=frog.numberOfPlans
+                chegaram.append(frog)
             createArrived(frog,chegaram,game,position_init)
 
         elif frog.position[0] > 276 and frog.position[0] < 296:
@@ -266,6 +282,11 @@ def frogArrived(frog,chegaram,game):
                 new_frog.desires.remove(frog.position)
                 new_frog.known_map = frog.known_map.copy()
                 frogs.append(new_frog)
+                frogs.remove(frog)
+                game.totalSteps+=frog.steps
+                game.totalDeaths+=frog.deaths
+                game.totalPlans+=frog.numberOfPlans
+                chegaram.append(frog)
             createArrived(frog,chegaram,game,position_init)
 
         elif frog.position[0] > 354 and frog.position[0] < 381:
@@ -277,6 +298,11 @@ def frogArrived(frog,chegaram,game):
                 new_frog.desires.remove(frog.position)
                 new_frog.known_map = frog.known_map.copy()
                 frogs.append(new_frog)
+                frogs.remove(frog)
+                game.totalSteps+=frog.steps
+                game.totalDeaths+=frog.deaths
+                game.totalPlans+=frog.numberOfPlans
+                chegaram.append(frog)
             createArrived(frog,chegaram,game,position_init)
 
         else:
@@ -305,7 +331,9 @@ def createArrived(frog,chegaram,game,position_init):
     sapo_chegou = Object(position_init,sprite_arrived)
     #chegaram.append(sapo_chegou)
     #frog.setPositionToInitialPosition()
-    game.incPoints(10 + game.time) 
+    game.incPoints(10 + game.time)
+    #if position_init not in chegaram:
+    #    chegaram.append(position_init) 
 
     frog.animation_counter = 0
     frog.animation_tick = 1
@@ -318,12 +346,16 @@ def createArrived(frog,chegaram,game,position_init):
 def nextLevel(chegaram,enemys,plataforms,frogs,game):
     if len(chegaram) == 5:
         chegaram[:] = []
-        for frog in frogs:
-            frog.setPositionToInitialPosition()
+        new_frog = Frog([43,475],sprite_sapo)
+        new_frog.known_map = frogs[-1].known_map.copy()
+        frogs=[]
+        frogs.append(new_frog)
+            
         game.incLevel()
         game.incSpeed()
         game.incPoints(100)
         game.resetTime()
+        game.gameStop+=1
 
 def drawNumber(x, y, number, screen):
     red = (156,0,0)
@@ -379,7 +411,7 @@ while True:
     createEnemys(ticks_enemys,enemys,game)
     createPlatform(ticks_plataforms,plataforms,game)
 
-    while True: # before we finished the game when they were all dead
+    while game.gameStop<3: # before we finished the game when they were all dead
         # frogs[0].frogDecision(enemys,plataforms)
         # Handler to get events from keyboard
         #frogs[0].frogDecision(enemys,plataforms,screen,sprite_plataform)
@@ -419,6 +451,9 @@ while True:
         for i in range (0, len(frogs)):
             #decision = frogs[i].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
             #frogs[i].act(decision)
+            if len(frogs[i].desires) == 0:
+                frogs[i].createDesires()
+
             frogs[i].deliberativeDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
             #print(frogs[i].position)
             aux=0
@@ -473,12 +508,25 @@ while True:
             if event.type == KEYDOWN:
                 gameInit = 0
 
+
+        deaths=0
+        steps=0
+        plans=0
+        for fr in frogs:
+            deaths+= fr.deaths
+            steps+= fr.steps
+            plans+=fr.numberOfPlans
+
         screen.blit(background, (0, 0))
         text = game_font.render('GAME OVER', 1, (255, 0, 0))
-        text_points = game_font.render(('Pontuação: {0}'.format(game.points)),1,(255,0,0))
+        text_deaths = game_font.render(('Deaths: {0}'.format(game.totalDeaths)),1,(255,0,0))
+        text_steps = game_font.render(('Steps: {0}'.format(game.totalSteps)), 1 , (255,0,0))
+        text_plans = game_font.render(('Plans: {0}'.format(game.totalPlans)), 1 , (255,0,0))
         text_reiniciar = info_font.render('Pressione qualquer tecla para reiniciar!',1,(255,0,0))
         screen.blit(text, (75, 120))
-        screen.blit(text_points,(10,170))
-        screen.blit(text_reiniciar,(70,250))
+        screen.blit(text_deaths,(75,170))
+        screen.blit(text_steps, (75, 220))
+        screen.blit(text_plans,(75,270))
+        screen.blit(text_reiniciar,(70,320))
 
         pygame.display.update()

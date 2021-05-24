@@ -32,11 +32,15 @@ class Frog(Object):
         self.canMoveLeft=False
         self.numberOfPlans=0
         
+        self.createDesires()
+        self.intention = None #nenufar que este sapo quer atingir
+        self.plan = [] #sequencia de acoes a tomar
+    
+    def createDesires(self):
+        aux=0
         for i in range(5):#estes sao os desires que pode ter (nenufares)
             self.desires.append((47+aux,9))
             aux+=81
-        self.intention = None #nenufar que este sapo quer atingir
-        self.plan = [] #sequencia de acoes a tomar
 
     def moveUp(self):
         if self.position[1] > 39:
@@ -279,25 +283,25 @@ class Frog(Object):
 
     ############################ Deliberative ##########################################################
     def deliberativeDecision(self,enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs):
-        
-        self.updateBeliefs(enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs)
-        #se nao tem intention, obtem uma nova
-        if (self.intention==None):
-            self.deliberate()
-        if (not(self.position[0] == self.intention[0] and self.position[1] == self.intention[1])):
-            #se o plano estiver vazio entao criar um plano
-            if (len(self.plan) == 0):
-                self.buildPlan()
-            #se o plano nao estiver vazio, *tentar* correr a primeira acao usando a funcao sound
-            if (self.sound()):
-                self.executeAction()
+        if self.can_move==1:
+            self.updateBeliefs(enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs)
+            #se nao tem intention, obtem uma nova
+            if (self.intention==None):
+                self.deliberate()
+            if (not(self.position[0] == self.intention[0] and self.position[1] == self.intention[1])):
+                #se o plano estiver vazio entao criar um plano
+                if (len(self.plan) == 0):
+                    self.buildPlan()
+                #se o plano nao estiver vazio, *tentar* correr a primeira acao usando a funcao sound
+                if (self.sound()):
+                    self.executeAction()
+                else:
+                    self.buildPlan()
+                    self.numberOfPlans+=1
+                    #print("not sound")
             else:
-                self.buildPlan()
-                self.numberOfPlans+=1
-                #print("not sound")
-        else:
-            #print("Number of plans:", self.numberOfPlans)
-            return
+                #print("Number of plans:", self.numberOfPlans)
+                return
 
     def deliberate(self):#escolhe o desire para intentions
         if(len(self.desires) !=0 ) :
@@ -495,6 +499,7 @@ class Frog(Object):
     def executeAction(self):#executa a acao que esta na primeira posicao do plano
         action = self.plan.pop(0)
         #print("Posicao:" + str(self.position))
+        self.incSteps()
         self.act(action)
 
     def setPositionToInitialPosition(self):
