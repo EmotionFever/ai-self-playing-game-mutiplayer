@@ -511,6 +511,7 @@ class Frog(Object):
     
     def executeAction(self):#executa a acao que esta na primeira posicao do plano
         action = self.plan.pop(0)
+        self.incSteps()
         #print("Posicao:" + str(self.position))
         self.act(action)
     

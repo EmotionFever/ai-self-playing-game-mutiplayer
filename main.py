@@ -316,7 +316,6 @@ def createArrived(frog,chegaram,game,position_init):
     game.resetTime()
     """
 
-
 def nextLevel(chegaram,enemys,plataforms,frogs,game):
     if len(chegaram) == 5:
         chegaram[:] = []
@@ -326,6 +325,7 @@ def nextLevel(chegaram,enemys,plataforms,frogs,game):
         #game.incSpeed()
         game.incPoints(100)
         game.resetTime()
+        game.gameStop+=1
 
 def drawNumber(x, y, number, screen):
     red = (156,0,0)
@@ -350,6 +350,7 @@ while True:
     gameInit = 1
     game = Game(3,1)
     game.speed=10
+    game.level=1
     key_up = 1
     frog_initial_positions = []
     frogs = []
@@ -382,7 +383,8 @@ while True:
     
     createEnemys(ticks_enemys,enemys,game)
     createPlatform(ticks_plataforms,plataforms,game)
-    while True: # before we finished the game when they were all dead
+    
+    while game.gameStop<3: # before we finished the game when they were all dead
         # frogs[0].frogDecision(enemys,plataforms)
         # Handler to get events from keyboard
         #frogs[0].frogDecision(enemys,plataforms,screen,sprite_plataform)
@@ -418,14 +420,14 @@ while True:
 
         #decision = frogs[1].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
         
-
+        
         for i in range (0, len(frogs)):
             #decision = frogs[i].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
             #frogs[i].act(decision)
             frogs[i].deliberativeDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
             #print(frogs[i].position)
             #aux=0
-        #time.sleep(0.200)
+        time.sleep(0.100)
 
         # for frog in frogs:
         #     for 
@@ -475,13 +477,25 @@ while True:
                 exit()
             if event.type == KEYDOWN:
                 gameInit = 0
+            
+        deaths=0
+        steps=0
+        plans=0
+        for fr in frogs:
+            deaths+= fr.deaths
+            steps+= fr.steps
+            plans+=fr.numberOfPlans
 
         screen.blit(background, (0, 0))
         text = game_font.render('GAME OVER', 1, (255, 0, 0))
-        text_points = game_font.render(('Pontuação: {0}'.format(game.points)),1,(255,0,0))
+        text_deaths = game_font.render(('Deaths: {0}'.format(deaths)),1,(255,0,0))
+        text_steps = game_font.render(('Steps: {0}'.format(steps)), 1 , (255,0,0))
+        text_plans = game_font.render(('Plans: {0}'.format(plans)), 1 , (255,0,0))
         text_reiniciar = info_font.render('Pressione qualquer tecla para reiniciar!',1,(255,0,0))
         screen.blit(text, (75, 120))
-        screen.blit(text_points,(10,170))
-        screen.blit(text_reiniciar,(70,250))
+        screen.blit(text_deaths,(75,170))
+        screen.blit(text_steps, (75, 220))
+        screen.blit(text_plans,(75,270))
+        screen.blit(text_reiniciar,(70,320))
 
         pygame.display.update()
