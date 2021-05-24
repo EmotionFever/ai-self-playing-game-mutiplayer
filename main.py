@@ -222,31 +222,68 @@ def frogInTheLake(frog,plataforms,game):
     #         frog.position[0] = frog.position[0] - game.speed
 
 def frogArrived(frog,chegaram,game):
-    if frog.position[0] > 33 and frog.position[0] < 53: #primeira posicao de chegada
-        position_init = [43,7] #posicao onde chegou
-        createArrived(frog,chegaram,game,position_init) # adicionar o sapo a lista dos chegados
+    if frog.can_move == 1:
+        if frog.position[0] > 33 and frog.position[0] < 53: #primeira posicao de chegada
+            position_init = [43,7] #posicao onde chegou
+            if len(frogs) < 6:
+                    new_frog = Frog(frog.initial_pos,sprite_sapo)
+                    frogs.append(new_frog)
+                    #frogs.remove(frog)
+                    game.totalSteps+=frog.steps
+                    game.totalDeaths+=frog.deaths
+                    chegaram.append(frog)
 
-    elif frog.position[0] > 115 and frog.position[0] < 135:
-        position_init = [125,7]
-        createArrived(frog,chegaram,game,position_init)
+            createArrived(frog,chegaram,game,position_init) # adicionar o sapo a lista dos chegados
 
-    elif frog.position[0] > 197 and frog.position[0] < 217:
-        position_init = [207,7]
-        createArrived(frog,chegaram,game,position_init)
+        elif frog.position[0] > 115 and frog.position[0] < 135:
+            position_init = [125,7]
+            if len(frogs) < 6:
+                    new_frog = Frog(frog.initial_pos,sprite_sapo)
+                    frogs.append(new_frog)
+                    #frogs.remove(frog)
+                    game.totalSteps+=frog.steps
+                    game.totalDeaths+=frog.deaths
+                    chegaram.append(frog)
+            createArrived(frog,chegaram,game,position_init)
 
-    elif frog.position[0] > 279 and frog.position[0] < 299:
-        position_init = [289,7]
-        createArrived(frog,chegaram,game,position_init)
+        elif frog.position[0] > 197 and frog.position[0] < 217:
+            position_init = [207,7]
+            if len(frogs) < 6:
+                    new_frog = Frog(frog.initial_pos,sprite_sapo)
+                    frogs.append(new_frog)
+                    #frogs.remove(frog)
+                    game.totalSteps+=frog.steps
+                    game.totalDeaths+=frog.deaths
+                    chegaram.append(frog)
+            createArrived(frog,chegaram,game,position_init)
 
-    elif frog.position[0] > 361 and frog.position[0] < 381:
-        position_init = [371,7]
-        createArrived(frog,chegaram,game,position_init)
+        elif frog.position[0] > 279 and frog.position[0] < 299:
+            position_init = [289,7]
+            if len(frogs) < 6:
+                    new_frog = Frog(frog.initial_pos,sprite_sapo)
+                    frogs.append(new_frog)
+                    #frogs.remove(frog)
+                    game.totalSteps+=frog.steps
+                    game.totalDeaths+=frog.deaths
+                    chegaram.append(frog)
+            createArrived(frog,chegaram,game,position_init)
 
-    else:
-        frog.position[1] = 46
-        frog.animation_counter = 0
-        frog.animation_tick = 1
-        frog.can_move = 1
+        elif frog.position[0] > 361 and frog.position[0] < 381:
+            position_init = [371,7]
+            if len(frogs) < 6:
+                    new_frog = Frog(frog.initial_pos,sprite_sapo)
+                    frogs.append(new_frog)
+                    #frogs.remove(frog)
+                    game.totalSteps+=frog.steps
+                    game.totalDeaths+=frog.deaths
+                    chegaram.append(frog)
+            createArrived(frog,chegaram,game,position_init)
+
+        else:
+            frog.position[1] = 46
+            frog.animation_counter = 0
+            frog.animation_tick = 1
+            frog.can_move = 1
 
 
 def whereIsTheFrog(frog):
@@ -268,8 +305,8 @@ def createArrived(frog,chegaram,game,position_init):
     #chegaram.append(sapo_chegou)
     #frog.setPositionToInitialPosition()
     game.incPoints(10 + game.time)
-    if position_init not in chegaram:
-        chegaram.append(position_init) 
+    #if position_init not in chegaram:
+    #    chegaram.append(position_init) 
 
     frog.animation_counter = 0
     frog.animation_tick = 1
@@ -282,9 +319,11 @@ def createArrived(frog,chegaram,game,position_init):
 def nextLevel(chegaram,enemys,plataforms,frogs,game):
     if len(chegaram) == 5:
         chegaram[:] = []
-        for frog in frogs:
-            frog.setPositionToInitialPosition()
-            frog.can_move=1
+        
+        new_frog = Frog([43,475],sprite_sapo)
+        frogs.clear()
+        frogs.append(new_frog)
+
         game.incLevel()
         game.incSpeed()
         game.incPoints(100)
@@ -318,17 +357,17 @@ while True:
     frog_initial_positions = []
     frogs = []
     frog_initial_positions.append([43 ,475])
-    frog_initial_positions.append([125,475])
-    frog_initial_positions.append([207,475])
-    frog_initial_positions.append([289,475])
-    frog_initial_positions.append([371,475])
+    #frog_initial_positions.append([125,475])
+    #frog_initial_positions.append([207,475])
+    #frog_initial_positions.append([289,475])
+    #frog_initial_positions.append([371,475])
     
     
     frogs.append(Frog(frog_initial_positions[0],sprite_sapo))
-    frogs.append(Frog(frog_initial_positions[1],sprite_sapo))
-    frogs.append(Frog(frog_initial_positions[2],sprite_sapo))
-    frogs.append(Frog(frog_initial_positions[3],sprite_sapo))
-    frogs.append(Frog(frog_initial_positions[4],sprite_sapo))
+    #frogs.append(Frog(frog_initial_positions[1],sprite_sapo))
+    #frogs.append(Frog(frog_initial_positions[2],sprite_sapo))
+    #frogs.append(Frog(frog_initial_positions[3],sprite_sapo))
+    #frogs.append(Frog(frog_initial_positions[4],sprite_sapo))
 
     enemys = []
     plataforms = []
@@ -419,7 +458,7 @@ while True:
 
         drawList(enemys)
         drawList(plataforms[:-10]) # desenhar todas as plataformas menos as 10 ultimas que são aquelas extra...
-        #drawList(chegaram)
+        drawList(chegaram)
 
         for i in range(len(frogs)):
             frogs[i].animateFrog(key_pressed,key_up)
@@ -447,7 +486,7 @@ while True:
         screen.blit(background, (0, 0))
         text = game_font.render('GAME OVER', 1, (255, 0, 0))
         text_deaths = game_font.render(('Deaths: {0}'.format(deaths)),1,(255,0,0))
-        text_steps = game_font.render(('Steps: {0}'.format(steps)), 1 , (255,0,0))
+        text_steps = game_font.render(('Steps: {0}'.format(game.totalSteps)), 1 , (255,0,0))
         text_plans = game_font.render(('Plans: I am reactive, I dont have plans...'), 1 , (255,0,0))
         text_reiniciar = info_font.render('Pressione qualquer tecla para reiniciar!',1,(255,0,0))
         screen.blit(text, (75, 120))

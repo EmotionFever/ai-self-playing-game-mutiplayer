@@ -6,6 +6,8 @@ class Game():
         self.time = 0
         self.gameInit = 0
         self.gameStop=0
+        self.totalSteps=0
+        self.totalDeaths=0
 
     def incLevel(self):
         self.level = self.level + 1
