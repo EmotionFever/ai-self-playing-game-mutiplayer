@@ -7,6 +7,7 @@ from random import randrange
 
 MOVE_DISTANCE = 39
 MOVE_DISTANCE_PREDICTION = 39 #35 esta muito perto
+NUMBER_OF_REACTIVE_STEPS = 3
 
 class Node(object):
     point = tuple()
@@ -31,6 +32,7 @@ class Frog(Object):
         self.canMoveRight=False
         self.canMoveLeft=False
         self.numberOfPlans=0
+        self.become_reactive=0
         
         self.createDesires()
         self.intention = None #nenufar que este sapo quer atingir
@@ -283,25 +285,34 @@ class Frog(Object):
 
     ############################ Deliberative ##########################################################
     def deliberativeDecision(self,enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs):
+        
         if self.can_move==1:
-            self.updateBeliefs(enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs)
-            #se nao tem intention, obtem uma nova
-            if (self.intention==None):
-                self.deliberate()
-            if (not(self.position[0] == self.intention[0] and self.position[1] == self.intention[1])):
-                #se o plano estiver vazio entao criar um plano
-                if (len(self.plan) == 0):
-                    self.buildPlan()
-                #se o plano nao estiver vazio, *tentar* correr a primeira acao usando a funcao sound
-                if (self.sound()):
-                    self.executeAction()
-                else:
-                    self.buildPlan()
-                    self.numberOfPlans+=1
-                    #print("not sound")
+            if self.become_reactive>0:# tornar-se reativo durante alguns steps
+                decision = self.frogDecision(enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs)
+                self.act(decision)
+                self.become_reactive-=1
             else:
-                #print("Number of plans:", self.numberOfPlans)
-                return
+                self.updateBeliefs(enemys,platforms_in, screen,sprite_platform,sprite_platform_quad,frogs)
+                #se nao tem intention, obtem uma nova
+                if (self.intention==None):
+                    self.deliberate()
+                if (not(self.position[0] == self.intention[0] and self.position[1] == self.intention[1])):
+                    #se o plano estiver vazio entao criar um plano
+                    if (len(self.plan) == 0):
+                        self.buildPlan()
+                    #se o plano nao estiver vazio, *tentar* correr a primeira acao usando a funcao sound
+                    if (self.sound()):
+                        self.executeAction()
+                    else:
+                        previous_plan = self.plan
+                        self.buildPlan()
+                        if self.plan == previous_plan: # se o novo plano e igual ao anterior
+                            self.become_reactive = NUMBER_OF_REACTIVE_STEPS # tornar o agente reativo por x steps
+                        self.numberOfPlans+=1
+                        #print("not sound")
+                else:
+                    #print("Number of plans:", self.numberOfPlans)
+                    return
 
     def deliberate(self):#escolhe o desire para intentions
         if(len(self.desires) !=0 ) :
@@ -429,22 +440,25 @@ class Frog(Object):
         #FOR pelos RECTS do shortestPath e ve como passar de um rect para outro
         res = self.shortestPath(self.position,self.intention)
         #print("INTENTION" , self.intention)
-        path = [res.point]
-        while(res.parent != None):
-            res = res.parent
-            path.insert(0,res.point)
-        # o path tem os varios pontos por onde tem de passar
-        #print(path)
-        self.plan = []
-        p1 = path.pop(0)
-        while(len(path) > 0):
-            p2 = path.pop(0)
-            action = self.howToReachFromTo(p1,p2)
-            self.plan.append(action)
-            p1=p2
+        if res == None:
+            self.become_reactive = 5
+        else:
+            path = [res.point]
+            while(res.parent != None):
+                res = res.parent
+                path.insert(0,res.point)
+            # o path tem os varios pontos por onde tem de passar
+            #print(path)
+            self.plan = []
+            p1 = path.pop(0)
+            while(len(path) > 0):
+                p2 = path.pop(0)
+                action = self.howToReachFromTo(p1,p2)
+                self.plan.append(action)
+                p1=p2
 
-        self.plan.append("up")   
-        #print(self.plan)
+            self.plan.append("up")   
+            #print(self.plan)
             
     def howToReachFromTo(self,p1,p2):#devolve a acao que deve ser executada para ir de um ponto para outro adjacente
         if(abs(p1[0] - p2[0]) < 14 and p1[1] < p2[1]):

@@ -83,52 +83,31 @@ position_init_cars = [[0,436], [160,436],[320,436],[40, 397],[160, 397] ,[380, 3
 def createEnemys(list,enemys,game):
     for i, tick in enumerate(list):
         list[i] = list[i] - 1
-        if tick <= 0: 
+        if tick <= 0:
             if i == 0:
                 list[0] = (40*game.speed)/game.level
-                position_init = position_init_cars[0]
-                enemy = Enemy(position_init,sprite_car1,"right",1) #55right, 58left, 80right, 68left, 56right
-                enemys.append(enemy)
-                position_init = position_init_cars[1]
-                enemy = Enemy(position_init,sprite_car3,"right",1)
-                enemys.append(enemy)
-                position_init = position_init_cars[2]
-                enemy = Enemy(position_init,sprite_car5,"right",1)
+                position_init = [-55,436]
+                enemy = Enemy(position_init,sprite_car1,"right",1)
                 enemys.append(enemy)
             elif i == 1:
                 list[1] = (30*game.speed)/game.level
-                position_init = position_init_cars[3]
+                position_init = [506, 397]
                 enemy = Enemy(position_init,sprite_car2,"left",2)
-                enemys.append(enemy)
-                position_init = position_init_cars[4]
-                enemy = Enemy(position_init,sprite_car4,"left",2)
-                enemys.append(enemy)
-                position_init = position_init_cars[5]
-                enemy = Enemy(position_init,sprite_car4,"left",2)
                 enemys.append(enemy)
             elif i == 2:
                 list[2] = (40*game.speed)/game.level
-                position_init = position_init_cars[6]
+                position_init = [-80, 357]
                 enemy = Enemy(position_init,sprite_car3,"right",2)
-                enemys.append(enemy)
-                position_init = position_init_cars[7]
-                enemy = Enemy(position_init,sprite_car5,"right",2)
                 enemys.append(enemy)
             elif i == 3:
                 list[3] = (30*game.speed)/game.level
-                position_init = position_init_cars[8]
-                enemy = Enemy(position_init,sprite_car4,"left",1)
-                enemys.append(enemy)
-                position_init = position_init_cars[9]
+                position_init = [516, 318]
                 enemy = Enemy(position_init,sprite_car4,"left",1)
                 enemys.append(enemy)
             elif i == 4:
                 list[4] = (50*game.speed)/game.level
-                position_init = position_init_cars[10]
+                position_init = [-56, 280]
                 enemy = Enemy(position_init,sprite_car5,"right",1)
-                enemys.append(enemy)
-                position_init = position_init_cars[11]
-                enemy = Enemy(position_init,sprite_car3,"right",1)
                 enemys.append(enemy)
                 
 
@@ -351,10 +330,10 @@ def nextLevel(chegaram,enemys,plataforms,frogs,game):
         frogs=[]
         frogs.append(new_frog)
             
-        game.incLevel()
-        game.incSpeed()
-        game.incPoints(100)
-        game.resetTime()
+        #game.incLevel()
+        #game.incSpeed()
+        #game.incPoints(100)
+        #game.resetTime()
         game.gameStop+=1
 
 def drawNumber(x, y, number, screen):
@@ -379,6 +358,8 @@ while gameInit == 0:
 while True:
     gameInit = 1
     game = Game(3,1)
+    game.speed=10
+    game.level=15
     key_up = 1
     frog_initial_positions = []
     frogs = []
@@ -442,7 +423,7 @@ while True:
         else:
             ticks_time -= 1
 
-        # createEnemys(ticks_enemys,enemys,game)
+        createEnemys(ticks_enemys,enemys,game)
         # createPlatform(ticks_plataforms,plataforms,game)
 
         #decision = frogs[1].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
@@ -459,11 +440,7 @@ while True:
             aux=0
         #time.sleep(0.200)
 
-        # for frog in frogs:
-        #     for 
-        #     if frog.rect().colliderect
-
-        #moveList(enemys,game.speed)
+        moveList(enemys,game.speed)
         #moveList(plataforms,game.speed)
 
         # text_info1 = info_font.render(('Level: {0}    Points: {1}'.format(game.level,game.points)),1,(255,255,255))
