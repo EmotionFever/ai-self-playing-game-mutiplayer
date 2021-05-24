@@ -350,7 +350,7 @@ while True:
     gameInit = 1
     game = Game(3,1)
     game.speed=10
-    game.level=1
+    game.level=15
     key_up = 1
     frog_initial_positions = []
     frogs = []
@@ -428,10 +428,6 @@ while True:
             #print(frogs[i].position)
             #aux=0
         time.sleep(0.100)
-
-        # for frog in frogs:
-        #     for 
-        #     if frog.rect().colliderect
 
         moveList(enemys,game.speed)
         #moveList(plataforms[:-10],game.speed)
