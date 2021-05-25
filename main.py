@@ -266,7 +266,7 @@ def nextLevel(chegaram,enemys,plataforms,frogs,game):
             frog.can_move=1
         #game.incLevel()
         #game.incSpeed()
-        game.incPoints(100)
+        #game.incPoints(100)
         #game.resetTime()
         game.gameStop+=1
 
@@ -292,8 +292,8 @@ while gameInit == 0:
 while True:
     gameInit = 1
     game = Game(3,1)
-    game.speed=50
-    game.level=50
+    game.speed=10
+    game.level=15
     key_up = 1
     # initial Frogs at the moment there are 2 
     frog_initial_positions = []
@@ -361,9 +361,6 @@ while True:
         createEnemys(ticks_enemys,enemys,game)
         # createPlatform(ticks_plataforms,plataforms,game)
 
-        #decision = frogs[1].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
-        
-
         for i in range (0, len(frogs)):
             decision = frogs[i].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
             frogs[i].act(decision)
@@ -426,7 +423,7 @@ while True:
         text_plans = game_font.render(('Plans: I am reactive, I dont have plans...'), 1 , (255,0,0))
         text_reiniciar = info_font.render('Pressione qualquer tecla para reiniciar!',1,(255,0,0))
         screen.blit(text, (75, 120))
-        #screen.blit(text_deaths,(75,170))
+        screen.blit(text_deaths,(75,170))
         screen.blit(text_steps, (75, 220))
         #screen.blit(text_plans,(1,270))
         screen.blit(text_reiniciar,(70,320))
