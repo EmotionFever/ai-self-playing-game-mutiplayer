@@ -334,9 +334,6 @@ while True:
     plataforms = []
     chegaram = []
     #30 ticks == 1 segundo
-    #ticks_enemys = [120, 90, 120, 90, 150]
-    #ticks_plataforms = [90, 90, 120, 120, 60]
-    #ticks_enemys = [30, 0, 30, 0, 60]
     ticks_enemys = [0, 0, 0, 0, 0]
     # ticks_plataforms = [0, 0, 30, 30, 30]
     ticks_plataforms = [0, 0, 0, 0, 0]
@@ -380,18 +377,11 @@ while True:
         # createEnemys(ticks_enemys,enemys,game)
         # createPlatform(ticks_plataforms,plataforms,game)
 
-        #decision = frogs[1].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
-        
-
         for i in range (0, len(frogs)):
             decision = frogs[i].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
             frogs[i].act(decision)
         
         #time.sleep(0.200)
-
-        # for frog in frogs:
-        #     for 
-        #     if frog.rect().colliderect
 
         #moveList(enemys,game.speed)
         #moveList(plataforms,game.speed)
