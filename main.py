@@ -225,7 +225,7 @@ def frogInTheLake(frog,plataforms,game):
     #         frog.position[0] = frog.position[0] - game.speed
 
 def frogArrived(frog,chegaram,game):
-    if frog.position[0] > 33 and frog.position[0] < 53: #primeira posicao de chegada
+    if frog.position[0] > 32 and frog.position[0] < 53: #primeira posicao de chegada
         position_init = [47,9] #posicao onde chegou
         frog.position = [47,9]
         createArrived(frog,chegaram,game,position_init) # adicionar o sapo a lista dos chegados
