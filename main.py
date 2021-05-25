@@ -339,9 +339,6 @@ while True:
     plataforms = []
     chegaram = []
     #30 ticks == 1 segundo
-    #ticks_enemys = [120, 90, 120, 90, 150]
-    #ticks_plataforms = [90, 90, 120, 120, 60]
-    #ticks_enemys = [30, 0, 30, 0, 60]
     ticks_enemys = [0, 0, 0, 0, 0]
     # ticks_plataforms = [0, 0, 30, 30, 30]
     ticks_plataforms = [0, 0, 0, 0, 0]
@@ -386,9 +383,6 @@ while True:
         # createEnemys(ticks_enemys,enemys,game)
         # createPlatform(ticks_plataforms,plataforms,game)
 
-        #decision = frogs[1].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
-        
-
         for i in range (0, len(frogs)):
             #decision = frogs[i].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
             #frogs[i].act(decision)
@@ -396,10 +390,6 @@ while True:
             #print(frogs[i].position)
             #aux=0
         #time.sleep(0.200)
-
-        # for frog in frogs:
-        #     for 
-        #     if frog.rect().colliderect
 
         #moveList(enemys,game.speed)
         #moveList(plataforms,game.speed)
@@ -461,7 +451,7 @@ while True:
         text_plans = game_font.render(('Plans: {0}'.format(plans)), 1 , (255,0,0))
         text_reiniciar = info_font.render('Pressione qualquer tecla para reiniciar!',1,(255,0,0))
         screen.blit(text, (75, 120))
-        screen.blit(text_deaths,(75,170))
+        #screen.blit(text_deaths,(75,170))
         screen.blit(text_steps, (75, 220))
         screen.blit(text_plans,(75,270))
         screen.blit(text_reiniciar,(70,320))
