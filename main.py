@@ -255,7 +255,7 @@ def frogInTheLake(frog,plataforms,game):
     #         frog.position[0] = frog.position[0] - game.speed
 
 def frogArrived(frog,chegaram,game):
-    if frog.position[0] > 33 and frog.position[0] < 53: #primeira posicao de chegada
+    if frog.position[0] > 32 and frog.position[0] < 53: #primeira posicao de chegada
         position_init = [47,9] #posicao onde chegou
         frog.position = [47,9]
         createArrived(frog,chegaram,game,position_init) # adicionar o sapo a lista dos chegados
@@ -372,10 +372,6 @@ while True:
     #30 ticks == 1 segundo
     #ticks_enemys = [120, 90, 120, 90, 150]
     ticks_enemys = [0, 0, 0, 0, 0]
-    #ticks_plataforms = [90, 90, 120, 120, 60]
-    #ticks_enemys = [30, 0, 30, 0, 60]
-    #ticks_enemys = [0, 0, 0, 0, 0]
-    # ticks_plataforms = [0, 0, 30, 30, 30]
     ticks_plataforms = [0, 0, 0, 0, 0]
     ticks_time = 30
     pressed_keys = 0
@@ -417,9 +413,6 @@ while True:
 
         createEnemys(ticks_enemys,enemys,game)
         # createPlatform(ticks_plataforms,plataforms,game)
-
-        #decision = frogs[1].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
-        
         
         for i in range (0, len(frogs)):
             #decision = frogs[i].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
@@ -427,7 +420,7 @@ while True:
             frogs[i].deliberativeDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
             #print(frogs[i].position)
             #aux=0
-        time.sleep(0.100)
+        #time.sleep(0.100)
 
         moveList(enemys,game.speed)
         #moveList(plataforms[:-10],game.speed)
