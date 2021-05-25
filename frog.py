@@ -156,8 +156,8 @@ class Frog(Object):
         
         #self.drawRectangle(self.rect(), False, screen)
 
-        for plat in platforms:
-            self.drawRectangle(plat.rect(),False,screen)
+        #for plat in platforms:
+        #    self.drawRectangle(plat.rect(),False,screen)
 
         self.canMoveUp = self.position[1] > 39
         self.canMoveDown = self.position[1] < 473
