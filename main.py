@@ -447,7 +447,7 @@ while True:
 
         screen.blit(background, (0, 0))
         text = game_font.render('GAME OVER', 1, (255, 0, 0))
-        text_deaths = game_font.render(('Deaths: {0}'.format(deaths)),1,(255,0,0))
+        text_deaths = game_font.render(('Deaths: {0}'.format(game.totalDeaths)),1,(255,0,0))
         text_steps = game_font.render(('Steps: {0}'.format(game.totalSteps)), 1 , (255,0,0))
         text_plans = game_font.render(('Plans: I am reactive, I dont have plans...'), 1 , (255,0,0))
         text_reiniciar = info_font.render('Pressione qualquer tecla para reiniciar!',1,(255,0,0))
