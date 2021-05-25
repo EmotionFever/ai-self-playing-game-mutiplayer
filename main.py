@@ -364,16 +364,8 @@ while True:
     frog_initial_positions = []
     frogs = []
     frog_initial_positions.append([43 ,475])
-    #frog_initial_positions.append([121,475]) #121
-    #frog_initial_positions.append([199,475]) #199
-    #frog_initial_positions.append([277,475]) #277
-    #frog_initial_positions.append([355,475]) #355
     
     frogs.append(Frog(frog_initial_positions[0],sprite_sapo))
-    #frogs.append(Frog(frog_initial_positions[1],sprite_sapo))
-    #frogs.append(Frog(frog_initial_positions[2],sprite_sapo))
-    #frogs.append(Frog(frog_initial_positions[3],sprite_sapo))
-    #frogs.append(Frog(frog_initial_positions[4],sprite_sapo))
 
     enemys = []
     plataforms = []
@@ -425,9 +417,6 @@ while True:
 
         createEnemys(ticks_enemys,enemys,game)
         # createPlatform(ticks_plataforms,plataforms,game)
-
-        #decision = frogs[1].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
-        
 
         for i in range (0, len(frogs)):
             #decision = frogs[i].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
