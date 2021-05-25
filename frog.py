@@ -188,11 +188,6 @@ class Frog(Object):
                 
                 if self.canMoveRight and rightRect.colliderect(car.rect()):
                     self.canMoveRight = False
-
-                # canMoveUp = canMoveUp and not upRect.colliderect(car.rect())
-                # canMoveDown = canMoveDown and not downRect.colliderect(car.rect())
-                # canMoveLeft = canMoveLeft and not leftRect.colliderect(car.rect())
-                # canMoveRight = canMoveRight and not rightRect.colliderect(car.rect())
                 
         #Se o sapo chegou no rio
         #O sapo pode andar se houver um tronco na posicao old: < 240
@@ -217,10 +212,6 @@ class Frog(Object):
                 if not self.canMoveRight and rightRect.colliderect(plat.rect()):
                     self.canMoveRight = True
 
-                # canMoveUp = canMoveUp and upRect.colliderect(plat.rect())
-                # canMoveDown = canMoveDown and downRect.colliderect(plat.rect())
-                # canMoveLeft = canMoveLeft and leftRect.colliderect(plat.rect())
-                # canMoveRight = canMoveRight and rightRect.colliderect(plat.rect())
         #sapo chegou no objetivo
         #elif frog.position[1] < 40 : 
 
