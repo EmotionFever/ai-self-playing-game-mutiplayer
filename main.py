@@ -332,34 +332,21 @@ while gameInit == 0:
 while True:
     gameInit = 1
     game = Game(3,1)
-    game.speed=50
-    game.level=50
+    game.speed=10
+    game.level=20
     key_up = 1
     # initial Frogs at the moment there are 2 
     frog_initial_positions = []
     frogs = []
     frog_initial_positions.append([43 ,475])
-    #frog_initial_positions.append([125,475])
-    #frog_initial_positions.append([207,475])
-    #frog_initial_positions.append([289,475])
-    #frog_initial_positions.append([371,475])
-    
-    
+
     frogs.append(Frog(frog_initial_positions[0],sprite_sapo))
-    #frogs.append(Frog(frog_initial_positions[1],sprite_sapo))
-    #frogs.append(Frog(frog_initial_positions[2],sprite_sapo))
-    #frogs.append(Frog(frog_initial_positions[3],sprite_sapo))
-    #frogs.append(Frog(frog_initial_positions[4],sprite_sapo))
 
     enemys = []
     plataforms = []
     chegaram = []
     #30 ticks == 1 segundo
-    #ticks_enemys = [120, 90, 120, 90, 150]
-    #ticks_plataforms = [90, 90, 120, 120, 60]
-    #ticks_enemys = [30, 0, 30, 0, 60]
     ticks_enemys = [0, 0, 0, 0, 0]
-    # ticks_plataforms = [0, 0, 30, 30, 30]
     ticks_plataforms = [0, 0, 0, 0, 0]
     ticks_time = 30
     pressed_keys = 0
@@ -401,18 +388,11 @@ while True:
         createEnemys(ticks_enemys,enemys,game)
         # createPlatform(ticks_plataforms,plataforms,game)
 
-        #decision = frogs[1].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
-        
-
         for i in range (0, len(frogs)):
             decision = frogs[i].frogDecision(enemys,plataforms,screen,sprite_plataform,sprite_plataform_quad,frogs)
             frogs[i].act(decision)
         
         #time.sleep(0.200)
-
-        # for frog in frogs:
-        #     for 
-        #     if frog.rect().colliderect
 
         moveList(enemys,game.speed)
         #moveList(plataforms,game.speed)

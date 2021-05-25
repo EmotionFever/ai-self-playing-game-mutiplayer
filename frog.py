@@ -148,7 +148,7 @@ class Frog(Object):
         #Se o sapo ainda não passou da estrada
         #O sapo pode andar se nao houver um carro na posicao old: > 240
         if self.position[1] > 270 :
-            print("Esta na estrada")
+            #print("Esta na estrada")
             for car in enemys:#verificar se nao bate num carro
                 if canMoveUp and upRect.colliderect(car.rect()):
                     canMoveUp = False
@@ -161,16 +161,11 @@ class Frog(Object):
                 
                 if canMoveRight and rightRect.colliderect(car.rect()):
                     canMoveRight = False
-
-                # canMoveUp = canMoveUp and not upRect.colliderect(car.rect())
-                # canMoveDown = canMoveDown and not downRect.colliderect(car.rect())
-                # canMoveLeft = canMoveLeft and not leftRect.colliderect(car.rect())
-                # canMoveRight = canMoveRight and not rightRect.colliderect(car.rect())
                 
         #Se o sapo chegou no rio
         #O sapo pode andar se houver um tronco na posicao old: < 240
         elif self.position[1] < 270 and self.position[1] > 40:
-            print("Esta no rio")
+            #print("Esta no rio")
             canMoveUp=False
             canMoveDown=False
             canMoveLeft=False
@@ -190,12 +185,7 @@ class Frog(Object):
                 if not canMoveRight and rightRect.colliderect(plat.rect()):
                     canMoveRight = True
 
-                # canMoveUp = canMoveUp and upRect.colliderect(plat.rect())
-                # canMoveDown = canMoveDown and downRect.colliderect(plat.rect())
-                # canMoveLeft = canMoveLeft and leftRect.colliderect(plat.rect())
-                # canMoveRight = canMoveRight and rightRect.colliderect(plat.rect())
         #sapo chegou no objetivo
-        #elif frog.position[1] < 40 : 
 
         # Verificar colisoes com o fim do mapa
         if rightRect.x >= 445:
@@ -224,10 +214,10 @@ class Frog(Object):
         self.drawRectangle(rightRect, canMoveRight, screen)
         #ate aqui, o sapo ja consegue sabe tudo a sua volta
 
-        print("canMoveUp:" + str(canMoveUp))
-        print("canMoveDown:" + str(canMoveDown))
-        print("canMoveLeft:" + str(canMoveLeft))
-        print("canMoveRight:" + str(canMoveRight))
+        #print("canMoveUp:" + str(canMoveUp))
+        #print("canMoveDown:" + str(canMoveDown))
+        #print("canMoveLeft:" + str(canMoveLeft))
+        #print("canMoveRight:" + str(canMoveRight))
 
         
         #possible_actions = [true, false, true, true]
@@ -251,65 +241,6 @@ class Frog(Object):
         probs = probs / (np.sum(probs)) #normalize
         
         return np.random.choice(actions,p=probs)
-
-
- #        if canMoveUp:#livre ou possivel ir para cima
- #            v = np.delete(np.array(possible_actions).astype(int), 0) # substitui o vector possible_actions para ints
- #            if np.sum(v) == 0:
- #                return "up"
- #            else:
- #                v = v / (np.sum(v)) * 0.2
- #                probs = np.insert(v, 0, 0.8)
- #                return np.random.choice(actions,p=probs)
- #        else:
- #            v = np.delete(np.array(possible_actions).astype(int), 1) # delete down
-
- #            v = np.array(possible_actions).astype(int) # [false, TF ,TF ,TF] => [0, 0-1, 0-1,0-1]
- #            if canMoveLeft or canMoveRight: 
- #                v = v / (np.sum(v)) * 0.2 * 0.8
-            
- #            if not canMoveLeft and not canMoveRight:
- #                return "down"
-
- #            if canMoveDown:
-                
-
- #            return np.random.choice(actions,p=v)
-
-
-
-
-        # elif canMoveRight and canMoveLeft: #se nao pode ir para cima tenta ir para os lados (isto nao e verdade)
-        #     v = np.delete(np.array(possible_actions).astype(int), 3) # substitui o vector possible_actions para ints
-        #     if np.sum(v) == 0:
-        #         return "right"
-        #     else:
-        #         v = v / (np.sum(v)) * 0.2
-        #         probs = np.insert(v, 3, 0.8)
-        #         return np.random.choice(actions,p=probs)
-
-        # elif canMoveLeft:
-        #     v = np.delete(np.array(possible_actions).astype(int), 2) # substitui o vector possible_actions para ints
-        #     if np.sum(v) == 0:
-        #         return "left"
-        #     else:
-        #         v = v / (np.sum(v)) * 0.2
-        #         probs = np.insert(v, 2, 0.8)
-        #         return np.random.choice(actions,p=probs)
-
-        # elif canMoveDown:
-        #     v = np.delete(np.array(possible_actions).astype(int), 1) # substitui o vector possible_actions para ints
-        #     if np.sum(v) == 0:
-        #         return "down"
-        #     else:
-        #         v = v / (np.sum(v)) * 0.2
-        #         probs = np.insert(v, 1, 0.8)
-        #         return np.random.choice(actions,p=probs)
-
-        # else: #
-        #     return ""
-        #bloqueado de todos lados
-            # nao faz nada
 
     def setPositionToInitialPosition(self):
         self.position = self.initial_pos.copy()
