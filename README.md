@@ -8,6 +8,8 @@ cooperating to reach the goal: have a frog on each of the five leaves.
 We started with this python version of the game available at:
 *<https://github.com/jgubert/frogger>*, and we adapt it to our needs.
 
+Demo of the project: https://youtu.be/fVNr7S46mU4
+
 ![Game environment](Images/frogger-game.jpg)
 
 ## Motivation
